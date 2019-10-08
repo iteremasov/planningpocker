@@ -1,6 +1,13 @@
-var http = require('http');
+let { PORT } = require('./config');
+const app = require('express')();
+const Main = require('./app/main');
+const main = new Main(app);
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  res.end('Hello World!');
-}).listen(8080);
+main.init(err => {
+	if (err) throw `Ошибка инициализации микросервиса: ${err.toString()}`;
+});
+
+app.listen(PORT, err => {
+  if (err) throw `Ошибка запуска микросервиса: ${err.toString()}`;
+  else console.log('start')
+});
