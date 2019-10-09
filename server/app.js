@@ -4,10 +4,10 @@ const Main = require('./app/main');
 const main = new Main(app);
 
 main.init(err => {
-	if (err) throw `error init service: ${err.toString()}`;
+	if (err) console.log('error init');
 });
 
 app.listen(PORT, err => {
-	if (err) throw `error start service: ${err.toString()}`;
+	if (err) console.log('error start');
 	else console.log('start');
 });

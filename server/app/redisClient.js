@@ -20,6 +20,15 @@ class RedisClient {
 			return Error('err');
 		}
 	}
+
+	getRoom(key) {
+		return new Promise((resolve, reject) => {
+			this.client.get(key, function(err, res) {
+				resolve(res);
+				reject(err);
+			});
+		});
+	}
 }
 
 module.exports = RedisClient;
