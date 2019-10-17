@@ -8,9 +8,9 @@ class RedisClient {
 		});
 	}
 
-	setRoom(key) {
+	setRoom(key, room) {
 		try {
-			const room = { users: [] };
+			// const room = { users: [] };
 			this.client.set(key, JSON.stringify(room));
 			console.log('make room = ', key);
 

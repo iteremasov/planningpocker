@@ -9,6 +9,7 @@ class Main {
 		expressWs(app);
 		this.app = app;
 		this.redisClient = new RedisClient();
+		this.connections = {};
 	}
 
 	init(callback) {
@@ -23,8 +24,18 @@ class Main {
 	}
 	generateRoom(request, response) {
 		const key = shortid.generate();
-		const result = this.redisClient.setRoom(key);
+		const result = this.redisClient.setRoom(key, (room = { users: [] }));
 		response.send(result);
+	}
+
+	_setWS(roomID, ws, userName) {
+		const roomConnections = this.connections[roomID];
+		if (!roomConnections) {
+			this.connections[roomID] = [{ userName: userName, ws: ws }];
+		} else {
+			const newConn = [...roomConnections, { userName: userName, ws: ws }];
+			this.connections[roomID] = newConn;
+		}
 	}
 
 	async wsRoom(ws, req) {
@@ -34,13 +45,28 @@ class Main {
 			ws.close();
 		} else {
 			room = JSON.parse(room);
-			if (room.users.includes(userName)) {
+			if (room.users.includes(userName)) { //TODO search user
 				ws.close();
 			} else {
-				ws.on('message', function(msg) {
-					console.log(msg);
+				this._setWS(roomID, ws, userName);
+				room.users = [...room.users, { userName: userName, vote: null }];
+				this.redisClient.setRoom(roomID, room);
+
+				ws.on('message', async msg => {
+					msg = JSON.parse(msg);
+					let data = await this.redisClient.getRoom(roomID);
+					data = JSON.parse(data);
+					const roomConnections = this.connections[roomID];
+					data.users = data.users.map(user => {
+						if (user.userName == userName) {
+							user.vote = msg.vote;
+						}
+						return user;
+					});
+					//TODO write to redis 
+					roomConnections.map(connection => connection.ws.send(JSON.stringify(data.users)));
 				});
-				console.log(room.users.includes(userName));
+				//TODO ws.on('close')
 			}
 		}
 	}
