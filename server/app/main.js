@@ -70,7 +70,6 @@ class Main {
 				ws.on('close', async () => {
 					let room = await this.redisClient.getRoom(roomID);
 					room = JSON.parse(room);
-					const roomConnections = this.connections[roomID];
 
 					room.users = room.users.filter(user => user.userName != userName);
 					this.redisClient.setRoom(roomID, room);
