@@ -71,7 +71,7 @@ class Main {
 					let room = await this.redisClient.getRoom(roomID);
 					room = JSON.parse(room);
 
-					room.users = room.users.filter(user => user.userName != userName);
+					room.users = room.users.filter(user => user.userName !== userName);
 					this.redisClient.setRoom(roomID, room);
 
 					this.connections[roomID] = this.connections[roomID].filter(user => user.userName != userName);
