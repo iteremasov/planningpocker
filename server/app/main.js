@@ -24,7 +24,8 @@ class Main {
 	}
 	generateRoom(request, response) {
 		const key = shortid.generate();
-		const result = this.redisClient.setRoom(key, (room = { users: [] }));
+		const room = { users: [] };
+		const result = this.redisClient.setRoom(key, room);
 		response.send(result);
 	}
 
@@ -45,7 +46,7 @@ class Main {
 			ws.close();
 		} else {
 			room = JSON.parse(room);
-			if (room.users.includes(userName)) { //TODO search user
+			if (room.users.find(user => user.userName === userName)) {
 				ws.close();
 			} else {
 				this._setWS(roomID, ws, userName);
@@ -54,19 +55,28 @@ class Main {
 
 				ws.on('message', async msg => {
 					msg = JSON.parse(msg);
-					let data = await this.redisClient.getRoom(roomID);
-					data = JSON.parse(data);
+					let room = await this.redisClient.getRoom(roomID);
+					room = JSON.parse(room);
 					const roomConnections = this.connections[roomID];
-					data.users = data.users.map(user => {
+					room.users = room.users.map(user => {
 						if (user.userName == userName) {
 							user.vote = msg.vote;
 						}
 						return user;
 					});
-					//TODO write to redis 
-					roomConnections.map(connection => connection.ws.send(JSON.stringify(data.users)));
+					this.redisClient.setRoom(roomID, room);
+					roomConnections.map(connection => connection.ws.send(JSON.stringify(room.users)));
 				});
-				//TODO ws.on('close')
+				ws.on('close', async () => {
+					let room = await this.redisClient.getRoom(roomID);
+					room = JSON.parse(room);
+					const roomConnections = this.connections[roomID];
+
+					room.users = room.users.filter(user => user.userName != userName);
+					this.redisClient.setRoom(roomID, room);
+
+					this.connections[roomID] = this.connections[roomID].filter(user => user.userName != userName);
+				});
 			}
 		}
 	}
