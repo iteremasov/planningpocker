@@ -26,7 +26,7 @@ class Main {
 		const key = shortid.generate();
 		const room = { users: [] };
 		const result = this.redisClient.setRoom(key, room);
-		response.send(result);
+		response.send(JSON.stringify(result));
 	}
 
 	_setWS(roomID, ws, userName) {

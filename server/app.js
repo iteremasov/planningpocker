@@ -9,5 +9,5 @@ main.init(err => {
 
 app.listen(PORT, err => {
 	if (err) console.log('error start');
-	else console.log('start');
+	else console.log('start port = '+ PORT);
 });
