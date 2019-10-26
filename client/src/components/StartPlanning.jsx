@@ -7,7 +7,7 @@ export default class StartPlanning extends Component {
 	makeRoom = () => {
 		fetchJsonPost(process.env.REACT_APP_URI_HTTP + 'rooms', {})
 			.then(response => response.json())
-			.then(response => console.log(response))
+			.then(response => this.props.history.push('/' + response.id))
 			.catch(err => console.log(err))
 	};
 	render() {
