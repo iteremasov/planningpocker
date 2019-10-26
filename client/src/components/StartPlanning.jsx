@@ -8,6 +8,7 @@ export default class StartPlanning extends Component {
 		fetchJsonPost(process.env.REACT_APP_URI_HTTP + 'rooms', {})
 			.then(response => response.json())
 			.then(response => console.log(response))
+			.catch(err => console.log(err))
 	};
 	render() {
 		return (
