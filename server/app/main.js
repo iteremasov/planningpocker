@@ -40,6 +40,8 @@ class Main {
 	}
 
 	async wsRoom(ws, req) {
+		console.log('click');
+
 		const { roomID, userName } = req.params;
 		let room = await this.redisClient.getRoom(roomID);
 		if (room === null) {
@@ -52,6 +54,8 @@ class Main {
 				this._setWS(roomID, ws, userName);
 				room.users = [...room.users, { userName: userName, vote: null }];
 				this.redisClient.setRoom(roomID, room);
+				const roomConnections = this.connections[roomID]; //add  seng all users this room
+				roomConnections.map(connection => connection.ws.send(JSON.stringify(room.users)));
 
 				ws.on('message', async msg => {
 					msg = JSON.parse(msg);
