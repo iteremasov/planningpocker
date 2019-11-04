@@ -1,0 +1,21 @@
+.usersPanel {
+    /* width: 100px; */
+	height: 150px;
+	/* position: fixed; */
+	border: 1px solid rgb(183, 255, 155);
+	background: rgb(255, 255, 255);
+	border-radius: 5px;
+}
+
+.userName,
+.userImage,
+.userVote {
+	text-align: center;
+}
+
+.user {
+    float:left;
+
+	width: 100px;
+	height: 150px;
+}

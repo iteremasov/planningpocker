@@ -79,6 +79,7 @@ class Main {
 					this.redisClient.setRoom(roomID, room);
 
 					this.connections[roomID] = this.connections[roomID].filter(user => user.userName != userName);
+					this.connections[roomID].map(connection => connection.ws.send(JSON.stringify(room.users)));
 				});
 			}
 		}

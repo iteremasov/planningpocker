@@ -4,14 +4,29 @@ import { Grid } from '@material-ui/core';
 
 export default class VotingPanel extends Component {
 	click = item => {
+		const conformity = {
+			'0': 0,
+			'1/2': 0.5,
+			'1': 1,
+			'2': 2,
+			'3': 3,
+			'5': 5,
+			'8': 8,
+			'13': 13,
+			'20': 20,
+			'40': 40,
+			'100': 100,
+			'?': 1000,
+			'♾': 1000000,
+		};
 		const act = this.props.onClick;
-        act(item);
+		act(conformity[item]);
 	};
 	render() {
 		const rowOne = ['0', '1/2', '1', '2'];
 		const rowTwo = ['3', '5', '8', '13'];
 		const rowThree = ['20', '40', '100', '?'];
-		const rowFour = ['221E'];
+		const rowFour = ['♾'];
 
 		const buttonStyle = { width: 48, height: 25 };
 
@@ -55,7 +70,7 @@ export default class VotingPanel extends Component {
 						<Grid item key={index} xs={3}>
 							<div>
 								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
-									{item}
+								{item}
 								</button>
 							</div>
 						</Grid>
