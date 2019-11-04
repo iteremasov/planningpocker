@@ -1,10 +1,9 @@
 .usersPanel {
-    /* width: 100px; */
-	height: 150px;
-	/* position: fixed; */
+    display: inline-block;
 	border: 1px solid rgb(183, 255, 155);
 	background: rgb(255, 255, 255);
-	border-radius: 5px;
+    border-radius: 5px;
+    overflow: hidden
 }
 
 .userName,
@@ -15,7 +14,6 @@
 
 .user {
     float:left;
-
 	width: 100px;
 	height: 150px;
 }

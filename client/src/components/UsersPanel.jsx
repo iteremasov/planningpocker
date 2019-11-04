@@ -6,9 +6,8 @@ import './userspanel.css'
 export default class UsersPanel extends Component {
 	render() {
         const users = this.props.users;
-        const userPanelWidth = {width: users.length * 101}
 		return (
-			<div className="usersPanel" style={userPanelWidth}>
+			<div className="usersPanel">
 				{console.log(typeof users)}
 				{users.map(item => {
 					return (
