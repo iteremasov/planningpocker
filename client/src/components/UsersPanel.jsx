@@ -8,10 +8,9 @@ export default class UsersPanel extends Component {
         const users = this.props.users;
 		return (
 			<div className="usersPanel">
-				{console.log(typeof users)}
-				{users.map(item => {
+				{users.map((item, index) => {
 					return (
-						<div className="user" >
+						<div className="user" key={index} >
 							<div className="userImage">
 								<img src={Icon} />
 							</div>
