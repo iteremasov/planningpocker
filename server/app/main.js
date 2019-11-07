@@ -24,7 +24,7 @@ class Main {
 	}
 	generateRoom(request, response) {
 		const key = shortid.generate();
-		const room = { users: [] };
+		const room = { users: [], issueDiscription: '' };
 		const result = this.redisClient.setRoom(key, room);
 		response.send(JSON.stringify(result));
 	}
@@ -40,7 +40,6 @@ class Main {
 	}
 
 	async wsRoom(ws, req) {
-		console.log('click');
 
 		const { roomID, userName } = req.params;
 		let room = await this.redisClient.getRoom(roomID);
@@ -55,21 +54,36 @@ class Main {
 				room.users = [...room.users, { userName: userName, vote: null }];
 				this.redisClient.setRoom(roomID, room);
 				const roomConnections = this.connections[roomID]; //add  seng all users this room
-				roomConnections.map(connection => connection.ws.send(JSON.stringify(room.users)));
+				roomConnections.map(connection =>
+					connection.ws.send(JSON.stringify({ key: 'firstConnect', users: room.users, discription: room.issueDiscription }))
+				);
 
 				ws.on('message', async msg => {
 					msg = JSON.parse(msg);
 					let room = await this.redisClient.getRoom(roomID);
 					room = JSON.parse(room);
 					const roomConnections = this.connections[roomID];
-					room.users = room.users.map(user => {
-						if (user.userName == userName) {
-							user.vote = msg.vote;
-						}
-						return user;
-					});
-					this.redisClient.setRoom(roomID, room);
-					roomConnections.map(connection => connection.ws.send(JSON.stringify(room.users)));
+					switch (msg.key) {
+						case 'vote':
+							room.users = room.users.map(user => {
+								if (user.userName == userName) {
+									user.vote = msg.data;
+								}
+								return user;
+							});
+							this.redisClient.setRoom(roomID, room);
+							roomConnections.map(connection =>
+								connection.ws.send(JSON.stringify({ key: 'users', data: room.users }))
+							);
+							break;
+						case 'discription':
+							room.issueDiscription = msg.data;
+							this.redisClient.setRoom(roomID, room);
+							roomConnections.map(connection =>
+								connection.ws.send(JSON.stringify({ key: 'discription', data: room.issueDiscription }))
+							);
+							break;
+					}
 				});
 				ws.on('close', async () => {
 					let room = await this.redisClient.getRoom(roomID);
@@ -79,7 +93,7 @@ class Main {
 					this.redisClient.setRoom(roomID, room);
 
 					this.connections[roomID] = this.connections[roomID].filter(user => user.userName != userName);
-					this.connections[roomID].map(connection => connection.ws.send(JSON.stringify(room.users)));
+					this.connections[roomID].map(connection => connection.ws.send(JSON.stringify({ key: 'users', data: room.users })));
 				});
 			}
 		}

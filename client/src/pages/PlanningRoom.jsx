@@ -1,50 +1,60 @@
 import React, { Component } from 'react';
 import VotingPanel from '../components/VotingPanel';
 import UsersPanel from '../components/UsersPanel';
+import IssueDiscription from '../components/IssueDiscription';
 
 export default class PlaningRoom extends Component {
-	state = { users: [], socket: null };
+	state = { users: [], socket: null, discription: '' };
 
-	vote = vote => {
-		console.log(vote);
-		const data = JSON.stringify({vote: vote})
-		this.state.socket.send(data)
+	setVote = vote => {
+		const data = JSON.stringify({ key: 'vote', data: vote });
+		this.state.socket.send(data);
+	};
+
+	setDiscription = discription => {
+		const data = JSON.stringify({ key: 'discription', data: discription });
+		this.state.socket.send(data);
 	};
 
 	componentDidMount = () => {
 		const { roomkey, username } = this.props.match.params;
 		const socket = new WebSocket(process.env.REACT_APP_URI_WS + roomkey + '/' + username);
 		// socket.onopen = function() {
-		// 	alert('Соединение установлено.');
 		// };
 
-		socket.onclose = function(event) {
-			if (event.wasClean) {
-				alert('Соединение закрыто чисто');
-			} else {
-				alert('Обрыв соединения'); // например, "убит" процесс сервера
-			}
-			alert('Код: ' + event.code + ' причина: ' + event.reason);
-		};
-
-		socket.onmessage = (event) => {
-			const data = JSON.parse(event.data)
-			this.setState({users: data})
-
-		};
+		// socket.onclose = function(event) {
+		// };
 
 		socket.onerror = function(error) {
-			console.log(error);
-			alert('Ошибка ' + error);
+			console.log('error connect ws');
 		};
+
+		socket.onmessage = event => {
+			const data = JSON.parse(event.data);
+			switch (data.key) {
+				case 'firstConnect':
+					this.setState({ users: data.users, discription: data.discription });
+					break;
+				case 'users':
+					this.setState({ users: data.data });
+					break;
+				case 'discription':
+					this.setState({ discription: data.data });
+					break;
+			}
+		};
+
 		this.setState({ socket: socket });
 	};
 
 	render() {
+		const discription = this.state.discription;
 		return (
 			<div>
-				<VotingPanel onClick={this.vote} />
-				<UsersPanel users = {this.state.users} />
+				<IssueDiscription saveDiscription={this.setDiscription} discription={discription} />
+
+				<VotingPanel onClick={this.setVote} />
+				<UsersPanel users={this.state.users} />
 			</div>
 		);
 	}

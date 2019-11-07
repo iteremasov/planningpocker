@@ -1,0 +1,21 @@
+.issuediscription {
+    text-align: center;
+    width: 90%;
+    background: rgb(226, 226, 226);
+    border: 1px solid rgb(183, 255, 155);
+    margin: 2% auto;
+    padding: 1%;
+    border-radius: 10px;
+}
+
+textarea{
+    width: 100%;
+}
+
+.savebutton{
+    width: 15%;
+    height: 10%;
+    border-radius: 5px;
+    background: rgb(16, 110, 252);
+    color: white;
+}
