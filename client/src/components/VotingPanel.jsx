@@ -17,7 +17,7 @@ export default class VotingPanel extends Component {
 			'40': 40,
 			'100': 100,
 			'?': 1000,
-			'♾': 1000000,
+			'♾': Infinity,
 		};
 		const act = this.props.onClick;
 		act(conformity[item]);

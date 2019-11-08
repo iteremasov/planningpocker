@@ -1,4 +1,4 @@
-.issuediscription {
+.issue-description {
     text-align: center;
     width: 90%;
     background: rgb(226, 226, 226);
@@ -8,11 +8,22 @@
     border-radius: 10px;
 }
 
-textarea{
+.issue-description__value {
+    min-height: 122px;
+    width: 100%;
+    background-color: #e2e2e2;
+    border: 1px solid gray;
+    text-align: left;
+    white-space: pre-line;
+    padding: 5px;
+}
+
+.issue-description__textarea {
     width: 100%;
 }
 
-.savebutton{
+.issue-description__button {
+    margin-top: 16px;
     width: 15%;
     height: 10%;
     border-radius: 5px;

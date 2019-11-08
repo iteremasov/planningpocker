@@ -1,7 +1,7 @@
 const cors = require('cors');
 const RedisClient = require('./redisClient');
 const shortid = require('shortid');
-var expressWs = require('express-ws');
+const expressWs = require('express-ws');
 
 class Main {
 	constructor(app) {
@@ -24,7 +24,7 @@ class Main {
 	}
 	generateRoom(request, response) {
 		const key = shortid.generate();
-		const room = { users: [], issueDiscription: '' };
+		const room = { users: [], issueDescription: '' };
 		const result = this.redisClient.setRoom(key, room);
 		response.send(JSON.stringify(result));
 	}
@@ -40,7 +40,6 @@ class Main {
 	}
 
 	async wsRoom(ws, req) {
-
 		const { roomID, userName } = req.params;
 		let room = await this.redisClient.getRoom(roomID);
 		if (room === null) {
@@ -55,18 +54,19 @@ class Main {
 				this.redisClient.setRoom(roomID, room);
 				const roomConnections = this.connections[roomID]; //add  seng all users this room
 				roomConnections.map(connection =>
-					connection.ws.send(JSON.stringify({ key: 'firstConnect', users: room.users, discription: room.issueDiscription }))
+					connection.ws.send(JSON.stringify({ key: 'firstConnect', users: room.users, description: room.issueDescription }))
 				);
 
 				ws.on('message', async msg => {
 					msg = JSON.parse(msg);
+					console.log(msg);
 					let room = await this.redisClient.getRoom(roomID);
 					room = JSON.parse(room);
 					const roomConnections = this.connections[roomID];
 					switch (msg.key) {
 						case 'vote':
 							room.users = room.users.map(user => {
-								if (user.userName == userName) {
+								if (user.userName === userName) {
 									user.vote = msg.data;
 								}
 								return user;
@@ -76,11 +76,11 @@ class Main {
 								connection.ws.send(JSON.stringify({ key: 'users', data: room.users }))
 							);
 							break;
-						case 'discription':
-							room.issueDiscription = msg.data;
+						case 'description':
+							room.issueDescription = msg.data;
 							this.redisClient.setRoom(roomID, room);
 							roomConnections.map(connection =>
-								connection.ws.send(JSON.stringify({ key: 'discription', data: room.issueDiscription }))
+								connection.ws.send(JSON.stringify({ key: 'description', data: room.issueDescription }))
 							);
 							break;
 					}
@@ -92,7 +92,7 @@ class Main {
 					room.users = room.users.filter(user => user.userName !== userName);
 					this.redisClient.setRoom(roomID, room);
 
-					this.connections[roomID] = this.connections[roomID].filter(user => user.userName != userName);
+					this.connections[roomID] = this.connections[roomID].filter(user => user.userName !== userName);
 					this.connections[roomID].map(connection => connection.ws.send(JSON.stringify({ key: 'users', data: room.users })));
 				});
 			}
