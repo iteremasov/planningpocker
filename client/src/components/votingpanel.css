@@ -1,10 +1,10 @@
 .votingpanel{
     width: 230px;
-    height: 130px;
-    /* position: fixed; */
+    height: 160px;
     border: 1px solid rgb(183, 255, 155);
     background: rgb(255, 255, 255);
     border-radius: 5px;
+
 
 }
 
@@ -13,4 +13,12 @@
     background: rgb(16, 110, 252);
     color: white;
 
+}
+
+.result-button{
+    border-radius: 5px;
+    background: rgb(55, 134, 253);
+    color: white;
+    width: 220px;
+    height: 30px;
 }

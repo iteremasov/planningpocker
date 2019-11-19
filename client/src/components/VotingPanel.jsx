@@ -3,6 +3,12 @@ import './votingpanel.css';
 import { Grid } from '@material-ui/core';
 
 export default class VotingPanel extends Component {
+
+	resultClick = () => {
+		const  showVotes = this.props.showVotes;
+		showVotes();
+	}
+
 	click = item => {
 		const conformity = {
 			'0': 0,
@@ -32,6 +38,13 @@ export default class VotingPanel extends Component {
 
 		return (
 			<div className="votingpanel">
+				<Grid container spacing={1}>
+				<div>
+								<button onClick={this.resultClick} className="result-button" >
+									show results
+								</button>
+							</div>
+				</Grid>
 				<Grid container spacing={1}>
 					{rowOne.map((item, index) => (
 						<Grid item key={index} xs={3}>
@@ -70,7 +83,7 @@ export default class VotingPanel extends Component {
 						<Grid item key={index} xs={3}>
 							<div>
 								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
-								{item}
+									{item}
 								</button>
 							</div>
 						</Grid>

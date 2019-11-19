@@ -11,6 +11,11 @@ export default class PlaningRoom extends Component {
 		this.state.socket.send(data);
 	};
 
+	showVotes = () => {
+		const data = JSON.stringify({ key: 'showVotes', data: true });
+		this.state.socket.send(data);
+	};
+
 	setDescription = (description) => {
 		const data = JSON.stringify({ key: 'description', data: description });
 		this.state.socket.send(data);
@@ -35,6 +40,7 @@ export default class PlaningRoom extends Component {
 			const data = JSON.parse(event.data);
 			switch (data.key) {
 				case 'firstConnect':
+					console.log(data)
 					this.setState({ users: data.users, description: data.description });
 					break;
 				case 'users':
@@ -46,6 +52,7 @@ export default class PlaningRoom extends Component {
 				default:
 					console.warn('Unknown data key in socket:', data.key);
 			}
+			console.log(data)
 		};
 
 		this.setState({ socket: socket });
@@ -56,7 +63,7 @@ export default class PlaningRoom extends Component {
 		return (
 			<div>
 				<IssueDescription saveDescription={this.setDescription} description={description} />
-				<VotingPanel onClick={this.setVote} />
+				<VotingPanel onClick={this.setVote} showVotes={this.showVotes} />
 				<UsersPanel users={this.state.users} />
 			</div>
 		);

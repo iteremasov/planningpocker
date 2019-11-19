@@ -24,7 +24,7 @@ class Main {
 	}
 	generateRoom(request, response) {
 		const key = shortid.generate();
-		const room = { users: [], issueDescription: '' };
+		const room = { users: [], issueDescription: '', showVotes: false };
 		const result = this.redisClient.setRoom(key, room);
 		response.send(JSON.stringify(result));
 	}
@@ -36,6 +36,71 @@ class Main {
 		} else {
 			const newConn = [...roomConnections, { userName: userName, ws: ws }];
 			this.connections[roomID] = newConn;
+		}
+	}
+
+	_allVoteCheck(users) {
+		if (users.find(user => user.vote === null)) {
+			return false;
+		}
+		return true;
+	}
+
+	_sendDataInFront(metod, roomID, room, roomConnections) {
+		// const roomConnections = this.connections[roomID];
+
+		switch (metod) {
+			case 'firstConnect':
+				if (room.showVotes) {
+					roomConnections.map(connection => {
+						connection.ws.send(
+							JSON.stringify({
+								key: 'firstConnect',
+								users: room.users,
+								description: room.issueDescription,
+							})
+						);
+					});
+				} else {
+					roomConnections.map(connection => {
+						const users = room.users.map(user => {
+							if (user.userName !== connection.userName) {
+								return { ...user, vote: null };
+							} else {
+								return { ...user };
+							}
+						});
+						connection.ws.send(
+							JSON.stringify({ key: 'firstConnect', users: users, description: room.issueDescription })
+						);
+					});
+				}
+
+				break;
+
+			case 'users':
+				if (this._allVoteCheck(room.users) || room.showVotes) {
+					roomConnections.map(connection => {
+						connection.ws.send(JSON.stringify({ key: 'users', data: room.users }));
+					});
+				} else {
+					roomConnections.map(connection => {
+						const users = room.users.map(user => {
+							if (user.userName !== connection.userName) {
+								return { ...user, vote: null };
+							} else {
+								return { ...user };
+							}
+						});
+						connection.ws.send(JSON.stringify({ key: 'users', data: users }));
+					});
+				}
+				break;
+
+			case 'description':
+				const data = { key: 'description', data: room.issueDescription };
+				roomConnections.map(connection => connection.ws.send(JSON.stringify(data)));
+				break;
 		}
 	}
 
@@ -52,10 +117,8 @@ class Main {
 				this._setWS(roomID, ws, userName);
 				room.users = [...room.users, { userName: userName, vote: null }];
 				this.redisClient.setRoom(roomID, room);
-				const roomConnections = this.connections[roomID]; //add  seng all users this room
-				roomConnections.map(connection =>
-					connection.ws.send(JSON.stringify({ key: 'firstConnect', users: room.users, description: room.issueDescription }))
-				);
+				const roomConnections = this.connections[roomID];
+				this._sendDataInFront('firstConnect', roomID, room, roomConnections);
 
 				ws.on('message', async msg => {
 					msg = JSON.parse(msg);
@@ -72,16 +135,19 @@ class Main {
 								return user;
 							});
 							this.redisClient.setRoom(roomID, room);
-							roomConnections.map(connection =>
-								connection.ws.send(JSON.stringify({ key: 'users', data: room.users }))
-							);
+
+							this._sendDataInFront('users', roomID, room, roomConnections);
 							break;
 						case 'description':
 							room.issueDescription = msg.data;
 							this.redisClient.setRoom(roomID, room);
-							roomConnections.map(connection =>
-								connection.ws.send(JSON.stringify({ key: 'description', data: room.issueDescription }))
-							);
+
+							this._sendDataInFront('description', roomID, room, roomConnections);
+							break;
+						case 'showVotes':
+							room.showVotes = msg.data;
+							this.redisClient.setRoom(roomID, room);
+							this._sendDataInFront('users', roomID, room, roomConnections);
 							break;
 					}
 				});
@@ -93,7 +159,9 @@ class Main {
 					this.redisClient.setRoom(roomID, room);
 
 					this.connections[roomID] = this.connections[roomID].filter(user => user.userName !== userName);
-					this.connections[roomID].map(connection => connection.ws.send(JSON.stringify({ key: 'users', data: room.users })));
+					this.connections[roomID].map(connection =>
+						connection.ws.send(JSON.stringify({ key: 'users', data: room.users }))
+					);
 				});
 			}
 		}
