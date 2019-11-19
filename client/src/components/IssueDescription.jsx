@@ -18,19 +18,19 @@ const IssueDescription = ({ saveDescription, description }) => {
 			setEditing(false);
 		} else {
   		setEditing(true);
-		}
+    }
   };
 
   return (
     <div className="issue-description">
       <h1>Issue Description</h1>
-      {editing ? <TextareaAutosize
+      {editing ? <TextareaAutosize autoFocus
 				className="issue-description__textarea"
         onChange={changeDescription}
         defaultValue={description}
         aria-label="maximum height"
         rows={5}
-      /> : <div className="issue-description__value">
+      /> : <div onClick={clickButton} className="issue-description__value">
 				{description}
 			</div>}
       <button onClick={clickButton} className="issue-description__button">

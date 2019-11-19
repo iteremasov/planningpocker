@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import VotingPanel from '../components/VotingPanel';
 import UsersPanel from '../components/UsersPanel';
 import IssueDescription from '../components/IssueDescription';
+import StaticPanel from '../components/StatisticPanel';
 
 export default class PlaningRoom extends Component {
 	state = { users: [], socket: null, description: '' };
@@ -65,6 +66,7 @@ export default class PlaningRoom extends Component {
 				<IssueDescription saveDescription={this.setDescription} description={description} />
 				<VotingPanel onClick={this.setVote} showVotes={this.showVotes} />
 				<UsersPanel users={this.state.users} />
+				<StaticPanel users ={this.state.users}/>
 			</div>
 		);
 	}
