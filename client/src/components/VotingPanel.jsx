@@ -1,30 +1,15 @@
 import React, { Component } from 'react';
 import './votingpanel.css';
 import { Grid } from '@material-ui/core';
+import { conformity } from '../static/Static';
 
 export default class VotingPanel extends Component {
-
 	resultClick = () => {
-		const  showVotes = this.props.showVotes;
+		const showVotes = this.props.showVotes;
 		showVotes();
-	}
+	};
 
 	click = item => {
-		const conformity = {
-			'0': 0,
-			'1/2': 0.5,
-			'1': 1,
-			'2': 2,
-			'3': 3,
-			'5': 5,
-			'8': 8,
-			'13': 13,
-			'20': 20,
-			'40': 40,
-			'100': 100,
-			'?': 1000,
-			'♾': Infinity,
-		};
 		const act = this.props.onClick;
 		act(conformity[item]);
 	};
@@ -39,11 +24,11 @@ export default class VotingPanel extends Component {
 		return (
 			<div className="votingpanel">
 				<Grid container spacing={1}>
-				<div>
-								<button onClick={this.resultClick} className="result-button" >
-									show results
-								</button>
-							</div>
+					<div>
+						<button onClick={this.resultClick} className="result-button">
+							show results
+						</button>
+					</div>
 				</Grid>
 				<Grid container spacing={1}>
 					{rowOne.map((item, index) => (

@@ -41,7 +41,6 @@ export default class PlaningRoom extends Component {
 			const data = JSON.parse(event.data);
 			switch (data.key) {
 				case 'firstConnect':
-					console.log(data)
 					this.setState({ users: data.users, description: data.description });
 					break;
 				case 'users':
@@ -51,9 +50,7 @@ export default class PlaningRoom extends Component {
 					this.setState({ description: data.data });
 					break;
 				default:
-					console.warn('Unknown data key in socket:', data.key);
 			}
-			console.log(data)
 		};
 
 		this.setState({ socket: socket });
