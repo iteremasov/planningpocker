@@ -3,6 +3,7 @@ import VotingPanel from '../components/VotingPanel';
 import UsersPanel from '../components/UsersPanel';
 import IssueDescription from '../components/IssueDescription';
 import StaticPanel from '../components/StatisticPanel';
+import { Grid } from '@material-ui/core';
 
 export default class PlaningRoom extends Component {
 	state = { users: [], socket: null, description: '' };
@@ -17,7 +18,7 @@ export default class PlaningRoom extends Component {
 		this.state.socket.send(data);
 	};
 
-	setDescription = (description) => {
+	setDescription = description => {
 		const data = JSON.stringify({ key: 'description', data: description });
 		this.state.socket.send(data);
 	};
@@ -60,10 +61,27 @@ export default class PlaningRoom extends Component {
 		const description = this.state.description;
 		return (
 			<div>
-				<IssueDescription saveDescription={this.setDescription} description={description} />
+				<Grid container spacing={1}>
+					<Grid xs={6}>
+						<VotingPanel onClick={this.setVote} showVotes={this.showVotes} />
+					</Grid>
+					<Grid xs={6}>
+						<StaticPanel users={this.state.users} />
+					</Grid>
+				</Grid>
+				<Grid container spacing={1}>
+					<Grid xs={3}>
+						<UsersPanel users={this.state.users} />
+					</Grid>
+					<Grid xs={9}>
+						<IssueDescription saveDescription={this.setDescription} description={description} />
+					</Grid>
+				</Grid>
+
+				{/* <IssueDescription saveDescription={this.setDescription} description={description} />
 				<VotingPanel onClick={this.setVote} showVotes={this.showVotes} />
 				<UsersPanel users={this.state.users} />
-				<StaticPanel users ={this.state.users}/>
+				<StaticPanel users ={this.state.users}/> */}
 			</div>
 		);
 	}

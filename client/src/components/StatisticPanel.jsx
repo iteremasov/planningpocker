@@ -24,7 +24,12 @@ class StatisticPanel extends Component {
 			realVotes.push(votes[i]);
 		}
 		const summ = realVotes.reduce((summ, item) => item + summ, 0);
-		return summ / realVotes.length;
+		const result = summ / realVotes.length;
+		if (result) {
+			return result;
+		} else {
+			return 0;
+		}
 	};
 
 	getVoteMerger = users => {
