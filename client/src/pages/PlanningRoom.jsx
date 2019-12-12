@@ -3,10 +3,16 @@ import VotingPanel from '../components/VotingPanel';
 import UsersPanel from '../components/UsersPanel';
 import IssueDescription from '../components/IssueDescription';
 import StaticPanel from '../components/StatisticPanel';
+import Chat from '../components/Chat';
 import { Grid } from '@material-ui/core';
 
 export default class PlaningRoom extends Component {
-	state = { users: [], socket: null, description: '' };
+	state = { users: [], socket: null, description: '', posts: [] };
+
+	setPost = post => {
+		const data = JSON.stringify({key: 'posts', data: post});
+		this.state.socket.send(data)
+	}
 
 	setVote = vote => {
 		const data = JSON.stringify({ key: 'vote', data: vote });
@@ -42,13 +48,16 @@ export default class PlaningRoom extends Component {
 			const data = JSON.parse(event.data);
 			switch (data.key) {
 				case 'firstConnect':
-					this.setState({ users: data.users, description: data.description });
+					this.setState({ users: data.users, description: data.description, posts: data.posts });
 					break;
 				case 'users':
 					this.setState({ users: data.data });
 					break;
 				case 'description':
 					this.setState({ description: data.data });
+					break;
+				case 'posts':
+					this.setState({posts: data.posts});
 					break;
 				default:
 			}
@@ -60,28 +69,24 @@ export default class PlaningRoom extends Component {
 	render() {
 		const description = this.state.description;
 		return (
-			<div>
+			<div className="planning-Room">
 				<Grid container spacing={1}>
-					<Grid xs={6}>
-						<VotingPanel onClick={this.setVote} showVotes={this.showVotes} />
-					</Grid>
-					<Grid xs={6}>
-						<StaticPanel users={this.state.users} />
-					</Grid>
-				</Grid>
-				<Grid container spacing={1}>
-					<Grid xs={3}>
+					<Grid xs={4}>
+						<Chat user={this.props.userName} posts={this.state.posts} setPost={this.setPost}/>
 						<UsersPanel users={this.state.users} />
 					</Grid>
-					<Grid xs={9}>
+					<Grid xs={8}>
+						<Grid container>
+							<Grid xs={6}>
+								<VotingPanel onClick={this.setVote} showVotes={this.showVotes} />
+							</Grid>
+							<Grid xs={6}>
+								<StaticPanel users={this.state.users} />
+							</Grid>
+						</Grid>
 						<IssueDescription saveDescription={this.setDescription} description={description} />
 					</Grid>
 				</Grid>
-
-				{/* <IssueDescription saveDescription={this.setDescription} description={description} />
-				<VotingPanel onClick={this.setVote} showVotes={this.showVotes} />
-				<UsersPanel users={this.state.users} />
-				<StaticPanel users ={this.state.users}/> */}
 			</div>
 		);
 	}

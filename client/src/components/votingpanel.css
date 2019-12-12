@@ -1,5 +1,8 @@
 .votingpanel{
     width: 230px;
+	margin: 2% auto;
+	padding: 2%;
+
     height: 160px;
     border: 1px solid rgb(183, 255, 155);
     background: rgb(255, 255, 255);

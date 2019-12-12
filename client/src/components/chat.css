@@ -1,0 +1,55 @@
+.chat {
+    padding: 2%;
+
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid rgb(183, 255, 155);
+    background: rgb(226, 226, 226);
+
+}
+
+.display-messeges {
+    overflow: auto;
+    border-radius: 10px;
+
+    width: 90%;
+    height: 250px;
+    margin: 2% auto;
+    background-color: white;
+
+}
+
+.input-messege {
+    width: 90%;
+}
+.chat-button{
+    border-radius: 5px;
+    background: rgb(16, 110, 252);
+    color: white;
+    width: 90%;
+
+}
+
+.my-post {
+    border-radius: 10px;
+    background:  rgb(212, 226, 248);;
+    margin-left: auto;
+    margin-right: 0;
+    width: 70%;
+}
+
+.not-my-post{
+    border-radius: 10px;
+    background:  rgb(232, 239, 250);;
+    width: 70%;
+}
+
+.user-name{
+    color: rgb(112, 12, 12);
+    margin-top: 0.1em; /* Отступ сверху */
+    margin-bottom: 0.1em; /* Отступ снизу */
+}
+.post-body{
+    margin-top: 0.1em; /* Отступ сверху */
+    margin-bottom: 0.1em; /* Отступ снизу */
+}

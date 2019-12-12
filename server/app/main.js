@@ -24,7 +24,7 @@ class Main {
 	}
 	generateRoom(request, response) {
 		const key = shortid.generate();
-		const room = { users: [], issueDescription: '', showVotes: false };
+		const room = { users: [], issueDescription: '', showVotes: false, posts: [] };
 		const result = this.redisClient.setRoom(key, room);
 		response.send(JSON.stringify(result));
 	}
@@ -47,9 +47,14 @@ class Main {
 	}
 
 	_sendDataInFront(metod, roomID, room, roomConnections) {
-		// const roomConnections = this.connections[roomID];
 
 		switch (metod) {
+			case 'posts':
+				roomConnections.map(connection =>
+					connection.ws.send(JSON.stringify({ key: 'posts', posts: room.posts }))
+				);
+				break;
+
 			case 'firstConnect':
 				if (room.showVotes) {
 					roomConnections.map(connection => {
@@ -58,6 +63,7 @@ class Main {
 								key: 'firstConnect',
 								users: room.users,
 								description: room.issueDescription,
+								posts: room.posts,
 							})
 						);
 					});
@@ -71,7 +77,12 @@ class Main {
 							}
 						});
 						connection.ws.send(
-							JSON.stringify({ key: 'firstConnect', users: users, description: room.issueDescription })
+							JSON.stringify({
+								key: 'firstConnect',
+								users: users,
+								description: room.issueDescription,
+								posts: room.posts,
+							})
 						);
 					});
 				}
@@ -122,11 +133,15 @@ class Main {
 
 				ws.on('message', async msg => {
 					msg = JSON.parse(msg);
-					console.log(msg);
 					let room = await this.redisClient.getRoom(roomID);
 					room = JSON.parse(room);
 					const roomConnections = this.connections[roomID];
 					switch (msg.key) {
+						case 'posts':
+							room.posts.push(msg.data);
+							this.redisClient.setRoom(roomID, room);
+							this._sendDataInFront('posts', roomID, room, roomConnections);
+							break;
 						case 'vote':
 							room.users = room.users.map(user => {
 								if (user.userName === userName) {
