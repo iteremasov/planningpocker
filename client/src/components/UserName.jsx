@@ -13,6 +13,13 @@ export default class UserName extends Component {
 	click = () => {
 		this.setState({ userName: this.state.textFieldValue });
 	};
+
+	checkKey = event => {
+		if(event.key === 'Enter'){
+			event.preventDefault();
+			this.click();
+		}
+	}
 	handleTextFieldChange = e => {
 		this.setState({
 			textFieldValue: e.target.value,
@@ -28,6 +35,7 @@ export default class UserName extends Component {
 					<div className="content">
 						<div className="inputUserName">
 							<TextField
+								onKeyDown={this.checkKey}
 								onChange={this.handleTextFieldChange}
 								id="outlined-name-input"
 								label="Input your name"
