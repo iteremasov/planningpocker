@@ -47,7 +47,6 @@ class Main {
 	}
 
 	_sendDataInFront(metod, roomID, room, roomConnections) {
-
 		switch (metod) {
 			case 'posts':
 				roomConnections.map(connection =>
@@ -70,8 +69,8 @@ class Main {
 				} else {
 					roomConnections.map(connection => {
 						const users = room.users.map(user => {
-							if (user.userName !== connection.userName) {
-								return { ...user, vote: null };
+							if (user.userName !== connection.userName && user.vote !== null) {
+								return { ...user, vote: true };
 							} else {
 								return { ...user };
 							}
@@ -97,8 +96,8 @@ class Main {
 				} else {
 					roomConnections.map(connection => {
 						const users = room.users.map(user => {
-							if (user.userName !== connection.userName) {
-								return { ...user, vote: null };
+							if (user.userName !== connection.userName && user.vote !== null) {
+								return { ...user, vote: true };
 							} else {
 								return { ...user };
 							}

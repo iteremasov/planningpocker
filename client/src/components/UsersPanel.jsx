@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { conformityRevers } from '../static/Static';
+import CheckIcon from '@material-ui/icons/Check';
+
 import Icon from '../static/icon.png';
 
 import './userspanel.css';
@@ -15,7 +17,17 @@ export default class UsersPanel extends Component {
 								<img src={Icon} />
 							</div>
 							<div className="userName">{item.userName}</div>
-							<div className="userVote">{item.vote != null ? conformityRevers[item.vote] : '--'}</div>
+							<div className="userVote">
+								{item.vote != null ? (
+									item.vote === true ? (
+										<CheckIcon />
+									) : (
+										conformityRevers[item.vote]
+									)
+								) : (
+									'--'
+								)}
+							</div>
 						</div>
 					);
 				})}
