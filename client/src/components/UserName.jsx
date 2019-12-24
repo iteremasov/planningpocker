@@ -35,6 +35,7 @@ export default class UserName extends Component {
 					<div className="content">
 						<div className="inputUserName">
 							<TextField
+								autoFocus
 								onKeyDown={this.checkKey}
 								onChange={this.handleTextFieldChange}
 								id="outlined-name-input"

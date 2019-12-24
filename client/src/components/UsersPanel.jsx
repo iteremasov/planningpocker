@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { conformityRevers } from '../static/Static';
 import CheckIcon from '@material-ui/icons/Check';
-
-import Icon from '../static/icon.png';
+import jdenticon from 'jdenticon';
 
 import './userspanel.css';
 export default class UsersPanel extends Component {
+	setIcon = userName => {
+		const size = 105;
+		const png = jdenticon.toSvg(userName, size);
+		return { __html: png };
+	};
 	render() {
 		const users = this.props.users;
 		return (
@@ -14,7 +18,7 @@ export default class UsersPanel extends Component {
 					return (
 						<div className="user" key={index}>
 							<div className="userImage">
-								<img src={Icon} />
+								<div dangerouslySetInnerHTML={this.setIcon(item.userName)} />
 							</div>
 							<div className="userName">{item.userName}</div>
 							<div className="userVote">

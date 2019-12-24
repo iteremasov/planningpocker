@@ -71,16 +71,16 @@ export default class PlaningRoom extends Component {
 		return (
 			<div className="planning-Room">
 				<Grid container spacing={1}>
-					<Grid xs={4}>
+					<Grid item={true} xs={4}>
 						<Chat user={this.props.userName} posts={this.state.posts} setPost={this.setPost}/>
 						<UsersPanel users={this.state.users} />
 					</Grid>
-					<Grid xs={8}>
+					<Grid item={true} xs={8}>
 						<Grid container>
-							<Grid xs={6}>
+							<Grid item={true} xs={6}>
 								<VotingPanel onClick={this.setVote} showVotes={this.showVotes} />
 							</Grid>
-							<Grid xs={6}>
+							<Grid item={true} xs={6}>
 								<StaticPanel users={this.state.users} />
 							</Grid>
 						</Grid>

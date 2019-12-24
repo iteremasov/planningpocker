@@ -61,18 +61,18 @@ class StatisticPanel extends Component {
 			<div className="statistic-panel">
 				<h2>Statistic panel</h2>
 				<Grid container spacing={1}>
-					<Grid xs={6}>Quantity users</Grid>
-					<Grid xs={6}>{this.getQuantity(users)}</Grid>
+					<Grid item={true} xs={6}>Quantity users</Grid>
+					<Grid item={true} xs={6}>{this.getQuantity(users)}</Grid>
 				</Grid>
 				<Grid container spacing={1}>
-					<Grid xs={6}>Average</Grid>
-					<Grid xs={6}>{this.getAverage(users)}</Grid>
+					<Grid item={true} xs={6}>Average</Grid>
+					<Grid item={true} xs={6}>{this.getAverage(users)}</Grid>
 				</Grid>
 				{statistic.map(item => {
 					return (
 						<Grid container spacing={1}>
-							<Grid xs={6}>vote- {conformityRevers[item.vote]}</Grid>
-							<Grid xs={6}>users- {item.counter}</Grid>
+							<Grid item={true} xs={6}>vote- {conformityRevers[item.vote]}</Grid>
+							<Grid item={true} xs={6}>users- {item.counter}</Grid>
 						</Grid>
 					);
 				})}
