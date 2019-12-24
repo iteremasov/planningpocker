@@ -9,6 +9,11 @@ export default class VotingPanel extends Component {
 		showVotes();
 	};
 
+	cleanVotes = () => {
+		const cleanVotes = this.props.cleanVotes;
+		cleanVotes();
+	}
+
 	click = item => {
 		const act = this.props.onClick;
 		act(conformity[item]);
@@ -24,11 +29,20 @@ export default class VotingPanel extends Component {
 		return (
 			<div className="votingpanel">
 				<Grid container spacing={1}>
-					<div>
-						<button onClick={this.resultClick} className="result-button">
-							show results
-						</button>
-					</div>
+					<Grid item xs={6}>
+						<div>
+							<button onClick={this.resultClick} className="result-button">
+								show results
+							</button>
+						</div>
+					</Grid>
+					<Grid item xs={6}>
+						<div>
+							<button onClick={this.cleanVotes} className="clean-button">
+								clean
+							</button>
+						</div>
+					</Grid>
 				</Grid>
 				<Grid container spacing={1}>
 					{rowOne.map((item, index) => (

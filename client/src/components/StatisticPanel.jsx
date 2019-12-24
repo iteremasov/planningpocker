@@ -68,9 +68,9 @@ class StatisticPanel extends Component {
 					<Grid item={true} xs={6}>Average</Grid>
 					<Grid item={true} xs={6}>{this.getAverage(users)}</Grid>
 				</Grid>
-				{statistic.map(item => {
+				{statistic.map((item, index) => {
 					return (
-						<Grid container spacing={1}>
+						<Grid key={index} container spacing={1}>
 							<Grid item={true} xs={6}>vote- {conformityRevers[item.vote]}</Grid>
 							<Grid item={true} xs={6}>users- {item.counter}</Grid>
 						</Grid>

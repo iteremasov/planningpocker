@@ -9,10 +9,15 @@ import { Grid } from '@material-ui/core';
 export default class PlaningRoom extends Component {
 	state = { users: [], socket: null, description: '', posts: [] };
 
+	cleanVotes = () => {
+		const data = JSON.stringify({ key: 'cleanVotes' });
+		this.state.socket.send(data);
+	};
+
 	setPost = post => {
-		const data = JSON.stringify({key: 'posts', data: post});
-		this.state.socket.send(data)
-	}
+		const data = JSON.stringify({ key: 'posts', data: post });
+		this.state.socket.send(data);
+	};
 
 	setVote = vote => {
 		const data = JSON.stringify({ key: 'vote', data: vote });
@@ -57,7 +62,7 @@ export default class PlaningRoom extends Component {
 					this.setState({ description: data.data });
 					break;
 				case 'posts':
-					this.setState({posts: data.posts});
+					this.setState({ posts: data.posts });
 					break;
 				default:
 			}
@@ -72,13 +77,17 @@ export default class PlaningRoom extends Component {
 			<div className="planning-Room">
 				<Grid container spacing={1}>
 					<Grid item={true} xs={4}>
-						<Chat user={this.props.userName} posts={this.state.posts} setPost={this.setPost}/>
+						<Chat user={this.props.userName} posts={this.state.posts} setPost={this.setPost} />
 						<UsersPanel users={this.state.users} />
 					</Grid>
 					<Grid item={true} xs={8}>
 						<Grid container>
 							<Grid item={true} xs={6}>
-								<VotingPanel onClick={this.setVote} showVotes={this.showVotes} />
+								<VotingPanel
+									onClick={this.setVote}
+									showVotes={this.showVotes}
+									cleanVotes={this.cleanVotes}
+								/>
 							</Grid>
 							<Grid item={true} xs={6}>
 								<StaticPanel users={this.state.users} />

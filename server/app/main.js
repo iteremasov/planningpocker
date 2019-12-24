@@ -136,6 +136,17 @@ class Main {
 					room = JSON.parse(room);
 					const roomConnections = this.connections[roomID];
 					switch (msg.key) {
+						case 'cleanVotes':
+							room.users = room.users.map(user => {
+								user.vote = null;
+								return user;
+							});
+
+							this.redisClient.setRoom(roomID, room);
+
+							this._sendDataInFront('users', roomID, room, roomConnections);
+							break;
+
 						case 'posts':
 							room.posts.push(msg.data);
 							this.redisClient.setRoom(roomID, room);

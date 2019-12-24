@@ -38,9 +38,9 @@ export default class Chat extends Component {
 			<div className="chat">
 				<h3>Chat</h3>
 				<div className="display-messeges">
-					{posts.map(post => {
+					{posts.map((post, index) => {
 						return (
-							<div key={post.key}>
+							<div key={index}>
 								{post.user === user ? (
 									<div className="my-post">
 										<p className="user-name">{post.user}</p>
