@@ -12,8 +12,6 @@ class RedisClient {
 		try {
 			// const room = { users: [] };
 			this.client.set(key, JSON.stringify(room));
-			console.log('make room = ', key);
-
 			return { id: key };
 		} catch {
 			console.log('error make room');

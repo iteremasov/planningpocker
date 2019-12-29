@@ -3,6 +3,7 @@ import { conformityRevers } from '../static/Static';
 import CheckIcon from '@material-ui/icons/Check';
 import jdenticon from 'jdenticon';
 
+
 import './userspanel.css';
 export default class UsersPanel extends Component {
 	setIcon = userName => {

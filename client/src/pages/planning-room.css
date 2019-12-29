@@ -1,0 +1,11 @@
+.selected-active-components {
+    position: sticky;
+    top: 0;
+    min-height: 2em;
+}
+
+.select-active-components-button {
+    color: white;
+    background-color: rgb(94, 94, 94);
+    width: 20%;
+}

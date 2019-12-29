@@ -53,7 +53,6 @@ class Main {
 					connection.ws.send(JSON.stringify({ key: 'posts', posts: room.posts }))
 				);
 				break;
-
 			case 'firstConnect':
 				if (room.showVotes) {
 					roomConnections.map(connection => {
@@ -85,9 +84,7 @@ class Main {
 						);
 					});
 				}
-
 				break;
-
 			case 'users':
 				if (this._allVoteCheck(room.users) || room.showVotes) {
 					roomConnections.map(connection => {
@@ -106,7 +103,6 @@ class Main {
 					});
 				}
 				break;
-
 			case 'description':
 				const data = { key: 'description', data: room.issueDescription };
 				roomConnections.map(connection => connection.ws.send(JSON.stringify(data)));
@@ -127,8 +123,7 @@ class Main {
 				this._setWS(roomID, ws, userName);
 				room.users = [...room.users, { userName: userName, vote: null }];
 				this.redisClient.setRoom(roomID, room);
-				const roomConnections = this.connections[roomID];
-				this._sendDataInFront('firstConnect', roomID, room, roomConnections);
+				this._sendDataInFront('firstConnect', roomID, room, this.connections[roomID]);
 
 				ws.on('message', async msg => {
 					msg = JSON.parse(msg);
@@ -141,12 +136,9 @@ class Main {
 								user.vote = null;
 								return user;
 							});
-
 							this.redisClient.setRoom(roomID, room);
-
 							this._sendDataInFront('users', roomID, room, roomConnections);
 							break;
-
 						case 'posts':
 							room.posts.push(msg.data);
 							this.redisClient.setRoom(roomID, room);
@@ -160,13 +152,11 @@ class Main {
 								return user;
 							});
 							this.redisClient.setRoom(roomID, room);
-
 							this._sendDataInFront('users', roomID, room, roomConnections);
 							break;
 						case 'description':
 							room.issueDescription = msg.data;
 							this.redisClient.setRoom(roomID, room);
-
 							this._sendDataInFront('description', roomID, room, roomConnections);
 							break;
 						case 'showVotes':
@@ -179,14 +169,15 @@ class Main {
 				ws.on('close', async () => {
 					let room = await this.redisClient.getRoom(roomID);
 					room = JSON.parse(room);
-
 					room.users = room.users.filter(user => user.userName !== userName);
 					this.redisClient.setRoom(roomID, room);
-
 					this.connections[roomID] = this.connections[roomID].filter(user => user.userName !== userName);
-					this.connections[roomID].map(connection =>
-						connection.ws.send(JSON.stringify({ key: 'users', data: room.users }))
-					);
+					this._sendDataInFront('users', roomID, room, this.connections[roomID]);
+					console.log(this.connections[roomID].length);
+					if (this.connections[roomID].length === 0){
+						console.log(`0 clients on ${roomID} room`);
+						delete this.connections[roomID];
+					}
 				});
 			}
 		}

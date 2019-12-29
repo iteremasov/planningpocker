@@ -6,8 +6,26 @@ import StaticPanel from '../components/StatisticPanel';
 import Chat from '../components/Chat';
 import { Grid } from '@material-ui/core';
 
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+import './planning-room.css';
+
 export default class PlaningRoom extends Component {
-	state = { users: [], socket: null, description: '', posts: [] };
+	state = {
+		users: [],
+		socket: null,
+		description: '',
+		posts: [],
+		components: [
+			{ name: 'Voteing', component: VotingPanel, active: false },
+			{ name: 'Issue-Description', component: IssueDescription, active: true },
+
+			{ name: 'Chat', component: Chat, active: false },
+			{ name: 'users', component: UsersPanel, active: false },
+			{ name: 'Statistic', component: StaticPanel, active: false },
+		],
+	};
 
 	cleanVotes = () => {
 		const data = JSON.stringify({ key: 'cleanVotes' });
@@ -71,31 +89,64 @@ export default class PlaningRoom extends Component {
 		this.setState({ socket: socket });
 	};
 
+	changeStateComponent = componentName => {
+		let components = this.state.components;
+		components = components.map(item => {
+			if (item.name === componentName) {
+				item.active = !item.active;
+			}
+			return item;
+		});
+		this.setState({ components: components });
+	};
+
 	render() {
+		const components = this.state.components;
 		const description = this.state.description;
 		return (
 			<div className="planning-Room">
-				<Grid container spacing={1}>
-					<Grid item={true} xs={4}>
-						<Chat user={this.props.userName} posts={this.state.posts} setPost={this.setPost} />
-						<UsersPanel users={this.state.users} />
-					</Grid>
-					<Grid item={true} xs={8}>
-						<Grid container>
-							<Grid item={true} xs={6}>
-								<VotingPanel
-									onClick={this.setVote}
-									showVotes={this.showVotes}
-									cleanVotes={this.cleanVotes}
-								/>
+				<div className="selected-active-components">
+					{components.map((item, index) => {
+						return (
+							<button
+								className="select-active-components-button"
+								onClick={() => {
+									this.changeStateComponent(item.name);
+								}}
+								key={index}
+							>
+								{item.name}
+								{item.active ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+							</button>
+						);
+					})}
+				</div>
+				<div>
+					{components[0].active && (
+						<VotingPanel onClick={this.setVote} showVotes={this.showVotes} cleanVotes={this.cleanVotes} />
+					)}
+					{components[4].active && <StaticPanel users={this.state.users} />}
+					{components[1].active && components[2].active ? (
+						<Grid container spacing={1}>
+							<Grid xs={4} item>
+								<Chat user={this.props.userName} posts={this.state.posts} setPost={this.setPost} />
 							</Grid>
-							<Grid item={true} xs={6}>
-								<StaticPanel users={this.state.users} />
+							<Grid xs={8} item>
+								<IssueDescription saveDescription={this.setDescription} description={description} />
 							</Grid>
 						</Grid>
-						<IssueDescription saveDescription={this.setDescription} description={description} />
-					</Grid>
-				</Grid>
+					) : (
+						<div>
+							{components[1].active && (
+								<IssueDescription saveDescription={this.setDescription} description={description} />
+							)}
+							{components[2].active && (
+								<Chat user={this.props.userName} posts={this.state.posts} setPost={this.setPost} />
+							)}
+						</div>
+					)}
+					{components[3].active && <UsersPanel users={this.state.users} />}
+				</div>
 			</div>
 		);
 	}
