@@ -6,6 +6,8 @@
 /.pnp
 .pnp.js
 
+client/src/pages/Test.jsx
+
 # testing
 /coverage
 
