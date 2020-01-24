@@ -1,7 +1,6 @@
 package com.planningPocker
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.gson.Gson
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Configuration
@@ -22,24 +21,100 @@ class ChatHandler : TextWebSocketHandler() {
 
     @Throws(Exception::class)
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
-        println("user cole")
-        sessionList -= session
+        var requestParams = getRoomIDAndUserName(session = session)
+        if (requestParams.size > 0) {
+            var roomID = requestParams[0]
+            var userName = requestParams[1]
+            var dataBaseRoomStr = jedis.get(roomID)
+            if (dataBaseRoomStr === null) {
+                return
+            }
+            var dataBaseRoom = Gson().fromJson(dataBaseRoomStr, RoomForRedis::class.java)
+
+            var newUsers = dataBaseRoom.users.filter { it -> it.userName != userName }
+            if (newUsers.size > 0) {
+                dataBaseRoom.users = newUsers.toTypedArray()
+                jedis.set(roomID, Gson().toJson(dataBaseRoom))
+                var room = rooms.get(roomID)
+                if (room === null) {
+                    return
+                }
+                room.connections.minusAssign(session)
+                rooms.set(roomID, room)
+                sendDataInFront(method = "users", room = dataBaseRoom, roomID = roomID)
+            } else {
+                jedis.del(roomID)
+                rooms.minusAssign(roomID)
+            }
+
+
+        } else {
+            return
+        }
+    }
+
+    fun allVoteCheck(room: RoomForRedis): Boolean {
+        var users = room.users.filter { user: User -> user.vote == null }
+        if (users.size > 0) {
+            return false
+        }
+        return true
     }
 
     fun sendDataInFront(method: String, room: RoomForRedis, roomID: String) {
-        when (method) {
-            "firstConnect" -> {
-                val message = Message(key = "firstConnect", posts = room.posts, users = room.users, description = room.issueDescription)
-                val appRoom = rooms.get(roomID)
-                if (appRoom != null) {
-                    println("send in front")
-                    println(message)
-                    println(Gson().toJson(message))
+        val appRoom = rooms.get(roomID)
+        if (appRoom != null) {
+
+            when (method) {
+                "firstConnect" -> {
+                    if (allVoteCheck(room) || room.showVotes) {
+                        val message = Message(key = "firstConnect", posts = room.posts, users = room.users, description = room.issueDescription)
+                        appRoom.connections.forEach { emit(it.key, message) }
+                    } else {
+                        appRoom.connections.forEach {
+                            var users = room.users.map { it.copy() }
+                            users.map { user ->
+                                if (user.userName != it.value.userName) {
+                                    user.vote = null
+                                }
+                            }
+                            val message = Message(key = "firstConnect", posts = room.posts, users = users, description = room.issueDescription)
+                            emit(it.key, message)
+                        }
+                    }
+
+                }
+                "users" -> {
+                    if (allVoteCheck(room) || room.showVotes) {
+                        var users = room.users.map { it.copy() }
+                        val message = UsersMessage(data = users)
+                        appRoom.connections.forEach { emit(it.key, message) }
+                        return
+                    } else {
+                        appRoom.connections.forEach {
+                            var users = room.users.map { it.copy() }
+                            users.map { user ->
+                                if (user.userName != it.value.userName) {
+                                    user.vote = null
+                                }
+                            }
+                            val message = UsersMessage(data = users)
+                            emit(it.key, message)
+                        }
+                    }
+
+                }
+                "description" -> {
+                    val message = DescriptionMessage(data = room.issueDescription)
                     appRoom.connections.forEach { emit(it.key, message) }
-                } else {
-                    println("какая то жопа")
+                }
+                "posts" -> {
+                    val message = PostsMessage(posts = room.posts)
+                    appRoom.connections.forEach { emit(it.key, message) }
                 }
             }
+        } else {
+            println("WTF???")
         }
     }
 
@@ -89,8 +164,6 @@ class ChatHandler : TextWebSocketHandler() {
         } else {
             session.close(); return
         }
-
-        println("connect user))))))))))))")
     }
 
     public override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
@@ -99,20 +172,41 @@ class ChatHandler : TextWebSocketHandler() {
             var roomID = requestParameters[0]
             var userName = requestParameters[1]
             val json = ObjectMapper().readTree(message?.payload)
-            // {type: "join/say", data: "name/msg"}
-            println(json)
+            var dataBaseRoomSTR = jedis.get(roomID)
+            var dataBaseRoom = Gson().fromJson(dataBaseRoomSTR, RoomForRedis::class.java)
             when (json.get("key").asText()) {
                 "description" -> {
+                    var description = json.get("data").asText()
+                    dataBaseRoom.issueDescription = description
+                    jedis.set(roomID, Gson().toJson(dataBaseRoom))
+                    sendDataInFront(method = "description", room = dataBaseRoom, roomID = roomID)
                 }
                 "showVotes" -> {
+                    dataBaseRoom.showVotes = true
+                    jedis.set(roomID, Gson().toJson(dataBaseRoom))
+                    sendDataInFront(method = "users", room = dataBaseRoom, roomID = roomID)
                 }
                 "vote" -> {
-
+                    var vote = json.get("data").asText().toFloat()
+                    dataBaseRoom.users.map { user ->
+                        if (user.userName == userName) {
+                            user.vote = vote
+                        }
+                    }
+                    jedis.set(roomID, Gson().toJson(dataBaseRoom))
+                    sendDataInFront(method = "users", room = dataBaseRoom, roomID = roomID)
                 }
                 "posts" -> {
-
+                    var JSONpost = json.get("data")
+                    var post = Post(user = JSONpost.get("user").asText(), post = JSONpost.get("post").asText())
+                    dataBaseRoom.posts += post
+                    jedis.set(roomID, Gson().toJson(dataBaseRoom))
+                    sendDataInFront(method = "posts", room = dataBaseRoom, roomID = roomID)
                 }
                 "cleanVotes" -> {
+                    dataBaseRoom.users.map { user -> user.vote = null }
+                    jedis.set(roomID, Gson().toJson(dataBaseRoom))
+                    sendDataInFront(method = "users", room = dataBaseRoom, roomID = roomID)
 
                 }
             }
@@ -121,7 +215,7 @@ class ChatHandler : TextWebSocketHandler() {
         }
     }
 
-    fun emit(session: WebSocketSession, msg: Message) = session.sendMessage(TextMessage(Gson().toJson(msg)))
+    fun emit(session: WebSocketSession, msg: Any) = session.sendMessage(TextMessage(Gson().toJson(msg)))
 }
 
 @Configuration
