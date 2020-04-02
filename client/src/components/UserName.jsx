@@ -33,13 +33,15 @@ export default class UserName extends Component {
 					<PlaningRoom userName={this.state.userName} roomkey={this.props.match.params.roomkey} />
 				) : (
 					<div className="content">
+						<h2>Enter your name. This will help your colleagues identify you.</h2>
+						<form action="" onSubmit={this.click}>
 						<div className="inputUserName">
 							<TextField
 								autoFocus
 								onKeyDown={this.checkKey}
 								onChange={this.handleTextFieldChange}
 								id="outlined-name-input"
-								label="Input your name"
+								label="name"
 								className="inputName"
 								margin="dense"
 								variant="outlined"
@@ -47,12 +49,14 @@ export default class UserName extends Component {
 							<Button
 								size="large"
 								disabled={this.state.textFieldValue ? false : true}
-								onClick={this.click}
+								type="submit"
 								className="button"
 							>
 								Join planning
 							</Button>
 						</div>
+						</form>
+
 					</div>
 				)}
 			</div>
