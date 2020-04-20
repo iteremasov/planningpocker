@@ -35,28 +35,28 @@ export default class Chat extends Component {
 		const { posts, user } = this.props;
 
 		return (
-			<div className="chat">
+			<i className="chat">
 				<h3>Chat</h3>
-				<div className="display-messeges">
+				<i className="display-messeges">
 					{posts.map((post, index) => {
 						return (
-							<div key={index}>
+							<i key={index}>
 								{post.user === user ? (
-									<div className="my-post">
+									<i className="my-post">
 										<p className="user-name">{post.user}</p>
 										<p className="post-body">{post.post}</p>
-									</div>
+									</i>
 								) : (
-									<div className="not-my-post">
+									<i className="not-my-post">
 										<p className="user-name">{post.user}</p>
 										<p className="post-body">{post.post}</p>
-									</div>
+									</i>
 								)}
-							</div>
+							</i>
 						);
 					})}
-				</div>
-				<div>
+				</i>
+				<i>
 					<textarea
 						onKeyDown={this.checkKeyKode}
 						onKeyUp={this.cleanShift}
@@ -64,11 +64,11 @@ export default class Chat extends Component {
 						onChange={this.changePost}
 						className="input-messege"
 					></textarea>
-				</div>
+				</i>
 				<button onClick={this.click} className="chat-button">
 					send
 				</button>
-			</div>
+			</i>
 		);
 	}
 }

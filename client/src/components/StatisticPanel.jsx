@@ -58,7 +58,7 @@ class StatisticPanel extends Component {
 		const users = this.props.users;
 		const statistic = this.getVoteMerger(users);
 		return (
-			<div className="statistic-panel">
+			<i className="statistic-panel">
 				<h2>Statistic panel</h2>
 				<Grid container spacing={1}>
 					<Grid item={true} xs={6}>Quantity users</Grid>
@@ -76,7 +76,7 @@ class StatisticPanel extends Component {
 						</Grid>
 					);
 				})}
-			</div>
+			</i>
 		);
 	}
 }

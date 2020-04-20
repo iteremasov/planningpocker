@@ -1,22 +1,104 @@
-import React, { Component } from 'react';
-import './header.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import InputBase from '@material-ui/core/InputBase';
+import { fade, makeStyles } from '@material-ui/core/styles';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
+import Container from '@material-ui/core/Container'
 
-class Header extends Component {
-	render() {
-		return (
-			<nav className="navbar navbar-expand-lg navbar-light bg-light">
-  <a className="navbar-brand" href="/">Home</a>
-  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span className="navbar-toggler-icon"></span>
-  </button>
-  <div className="collapse navbar-collapse" id="navbarNav">
-    <ul className="navbar-nav">
-    </ul>
-  </div>
-</nav> 
-		);
-	}
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto',
+    },
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '12ch',
+      '&:focus': {
+        width: '20ch',
+      },
+    },
+  },
+}));
+
+export default function Header() {
+  const classes = useStyles();
+
+  return (
+    <i className={classes.root}>
+      <AppBar position="static">
+        <Container maxWidth="md">
+        <Toolbar>
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="open drawer"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography className={classes.title} variant="h6" noWrap>
+            Material-UI
+          </Typography>
+          <i className={classes.search}>
+            <i className={classes.searchIcon}>
+              <SearchIcon />
+            </i>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </i>
+        </Toolbar>
+        </Container>
+      </AppBar>
+    </i>
+  );
 }
-
-export default Header;

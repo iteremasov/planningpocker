@@ -1,11 +1,18 @@
-.selected-active-components {
-    position: sticky;
-    top: 0;
-    min-height: 2em;
+.first-panel {
+    margin: 1% auto 0;
+    width: 95%;
+    text-align: center;
 }
 
-.select-active-components-button {
-    color: white;
-    background-color: rgb(94, 94, 94);
-    width: 20%;
+.description-and-users {
+    /* display: inline-block; */
+    margin: 1% auto 0;
+    width: 95%;
+}
+.usersPanel {
+    float: left;
+    clear: both;
+}
+.issue-description {
+    /* display: inline-block; */
 }

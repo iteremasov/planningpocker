@@ -27,68 +27,68 @@ export default class VotingPanel extends Component {
 		const buttonStyle = { width: 48, height: 25 };
 
 		return (
-			<div className="votingpanel">
+			<i className="votingpanel">
 				<Grid container spacing={1}>
 					<Grid item xs={6}>
-						<div>
+						<i>
 							<button onClick={this.resultClick} className="result-button">
 								show results
 							</button>
-						</div>
+						</i>
 					</Grid>
 					<Grid item xs={6}>
-						<div>
+						<i>
 							<button onClick={this.cleanVotes} className="clean-button">
 								clean
 							</button>
-						</div>
+						</i>
 					</Grid>
 				</Grid>
 				<Grid container spacing={1}>
 					{rowOne.map((item, index) => (
 						<Grid item key={index} xs={3}>
-							<div>
+							<i>
 								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
 									{item}
 								</button>
-							</div>
+							</i>
 						</Grid>
 					))}
 				</Grid>
 				<Grid container spacing={1}>
 					{rowTwo.map((item, index) => (
 						<Grid item key={index} xs={3}>
-							<div>
+							<i>
 								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
 									{item}
 								</button>
-							</div>
+							</i>
 						</Grid>
 					))}
 				</Grid>
 				<Grid container spacing={1}>
 					{rowThree.map((item, index) => (
 						<Grid item key={index} xs={3}>
-							<div>
+							<i>
 								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
 									{item}
 								</button>
-							</div>
+							</i>
 						</Grid>
 					))}
 				</Grid>
 				<Grid container spacing={1}>
 					{rowFour.map((item, index) => (
 						<Grid item key={index} xs={3}>
-							<div>
+							<i>
 								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
 									{item}
 								</button>
-							</div>
+							</i>
 						</Grid>
 					))}
 				</Grid>
-			</div>
+			</i>
 		);
 	}
 }
