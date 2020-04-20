@@ -1,94 +1,49 @@
-import React, { Component } from 'react';
-import './votingpanel.css';
-import { Grid } from '@material-ui/core';
+import React from 'react';
 import { conformity } from '../static/Static';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
 
-export default class VotingPanel extends Component {
-	resultClick = () => {
-		const showVotes = this.props.showVotes;
-		showVotes();
-	};
+const useStyles = makeStyles((theme) => ({
+  voteButton: {
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1)
+  }
+}));
 
-	cleanVotes = () => {
-		const cleanVotes = this.props.cleanVotes;
-		cleanVotes();
-	}
+export default function VotingPanel({ showVotes, cleanVotes, onClick }) {
 
-	click = item => {
-		const act = this.props.onClick;
-		act(conformity[item]);
-	};
-	render() {
-		const rowOne = ['0', '1/2', '1', '2'];
-		const rowTwo = ['3', '5', '8', '13'];
-		const rowThree = ['20', '40', '100', '?'];
-		const rowFour = ['♾'];
+  const click = item => {
+    onClick(conformity[item]);
+  };
+  const classes = useStyles();
+  const values = ['0', '1/2', '1', '2', '3', '5', '8', '13', '20', '40', '100', '?', '♾'];
 
-		const buttonStyle = { width: 48, height: 25 };
-
-		return (
-			<i className="votingpanel">
-				<Grid container spacing={1}>
-					<Grid item xs={6}>
-						<i>
-							<button onClick={this.resultClick} className="result-button">
-								show results
-							</button>
-						</i>
-					</Grid>
-					<Grid item xs={6}>
-						<i>
-							<button onClick={this.cleanVotes} className="clean-button">
-								clean
-							</button>
-						</i>
-					</Grid>
-				</Grid>
-				<Grid container spacing={1}>
-					{rowOne.map((item, index) => (
-						<Grid item key={index} xs={3}>
-							<i>
-								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
-									{item}
-								</button>
-							</i>
-						</Grid>
-					))}
-				</Grid>
-				<Grid container spacing={1}>
-					{rowTwo.map((item, index) => (
-						<Grid item key={index} xs={3}>
-							<i>
-								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
-									{item}
-								</button>
-							</i>
-						</Grid>
-					))}
-				</Grid>
-				<Grid container spacing={1}>
-					{rowThree.map((item, index) => (
-						<Grid item key={index} xs={3}>
-							<i>
-								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
-									{item}
-								</button>
-							</i>
-						</Grid>
-					))}
-				</Grid>
-				<Grid container spacing={1}>
-					{rowFour.map((item, index) => (
-						<Grid item key={index} xs={3}>
-							<i>
-								<button onClick={() => this.click(item)} className="button" style={buttonStyle}>
-									{item}
-								</button>
-							</i>
-						</Grid>
-					))}
-				</Grid>
-			</i>
-		);
-	}
+  return (
+    <Card>
+      <CardContent>
+        <Typography variant="h5" component="h2">
+          Votes
+        </Typography>
+        <CardActions>
+          <Button color="primary" variant="contained" onClick={showVotes}>Show Results</Button>
+          <Button color="primary" variant="contained" onClick={cleanVotes}>Clean</Button>
+        </CardActions>
+        <CardActions>
+          <div>
+            {
+              values.map(value => {
+                return (
+                  <Button className={classes.voteButton} color="secondary" variant="contained" onClick={() => click(value)}>{value}</Button>
+                )
+              })
+            }
+          </div>
+        </CardActions>
+      </CardContent>
+    </Card>
+  )
 }
