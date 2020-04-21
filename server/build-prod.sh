@@ -2,6 +2,8 @@
 
 set -e
 
+cd $(dirname $0)
+
 IMAGE_NAME=pplanning-server:latest
 
 docker rm $(docker stop $(docker ps -a -q --filter ancestor=${IMAGE_NAME} --format="{{.ID}}"))
