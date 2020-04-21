@@ -37,7 +37,7 @@ export default function VotingPanel({ showVotes, cleanVotes, onClick }) {
             {
               values.map(value => {
                 return (
-                  <Button className={classes.voteButton} color="secondary" variant="contained" onClick={() => click(value)}>{value}</Button>
+                  <Button key={value} className={classes.voteButton} color="secondary" variant="contained" onClick={() => click(value)}>{value}</Button>
                 )
               })
             }
