@@ -8,4 +8,4 @@ docker rm $(docker stop $(docker ps -a -q --filter ancestor=${IMAGE_NAME} --form
 
 docker build -t $IMAGE_NAME .
 
-docker run -d -p 8082:80 $IMAGE_NAME
+docker run -d -p 8082:5050 $IMAGE_NAME
