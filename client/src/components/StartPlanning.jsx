@@ -12,17 +12,17 @@ export default class StartPlanning extends Component {
 	};
 	render() {
 		return (
-			<i className="startPlanning">
+			<div className="startPlanning">
 				<h1>planning-pocker service</h1>
 				<h3>Press the button to start</h3>
-				<i className="start-button">
+				<div className="start-button">
 					<Button
 						color="primary"
 						variant="contained"
-						onClick={this.makeRoom}>Start <br /> session
+						onClick={this.makeRoom}>Create <br /> Room
 						</Button>
-				</i>
-			</i>
+				</div>
+			</div>
 		);
 	}
 }

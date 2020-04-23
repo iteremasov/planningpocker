@@ -43,8 +43,6 @@ function Header(props) {
             <Typography className={classes.title} variant="h6" noWrap>
               PPocker
           </Typography>
-          {console.log(window.location.href)}
-          {console.log(window.location.pathname)}
             {
               window.location.pathname.length > 1 &&
                 <AddUsers url={window.location.href} />

@@ -4,7 +4,7 @@
     position: relative;
     height: 90vh;
   }
-  
+
  .startPlanning::after {
     content: "";
     background: url("../images/pocker-image.jpg");
@@ -14,7 +14,7 @@
     bottom: 0;
     right: 0;
     position: absolute;
-    z-index: -1;   
+    z-index: -1;
   }
 
   /* H */
@@ -25,5 +25,6 @@
 }
  /* Button */
  .start-button button {
-   
+  margin: 10% auto;
+  display: flex;
  }
