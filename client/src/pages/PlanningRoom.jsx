@@ -111,36 +111,6 @@ export default class PlaningRoom extends Component {
           </Grid>
         </Grid>
       </>
-
-
-      // <i className="planning-Room">
-      //   <section className="first-panel">
-      //     <StatisticPanel users={this.state.users} />
-      //   </section>
-      //   <section>
-      //     <VotingPanel onClick={this.setVote} showVotes={this.showVotes} cleanVotes={this.cleanVotes} />
-      //   </section>
-      //   <section className="description-and-users">
-      //     <UsersPanel users={this.state.users} />
-      //     <IssueDescription
-      //       description={description}
-      //       saveDescription={this.setDescription} />
-      //   </section>
-
-
-      // <section className="description-and-users">
-      // 	<Grid container spacing={1}>
-      // 		<Grid xs={3}>
-      // 			<UsersPanel users={this.state.users} />
-      // 		</Grid>
-      // 		<Grid xs={9}>
-      // 			<IssueDescription
-      // 				description={description}
-      // 				saveDescription={this.setDescription} />
-      // 		</Grid>
-      // 	</Grid>
-      // </section>
-
     );
   }
 }

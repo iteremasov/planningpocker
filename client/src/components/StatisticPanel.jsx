@@ -80,10 +80,10 @@ export default function StatisticPanel({ users }) {
             return (
               <ListItem>
                 <ListItemText>
-                  vote-{conformityRevers[item.vote]}
+                  users- {item.counter}
                 </ListItemText>
                 <ListItemSecondaryAction>
-                  users- {item.counter}
+                  vote-{conformityRevers[item.vote]}
                 </ListItemSecondaryAction>
               </ListItem>
             )
@@ -93,3 +93,4 @@ export default function StatisticPanel({ users }) {
     </Card>
   )
 }
+
