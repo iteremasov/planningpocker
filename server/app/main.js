@@ -167,10 +167,9 @@ class Main {
 					this.redisClient.setRoom(roomID, room);
 					this.connections[roomID] = this.connections[roomID].filter(user => user.userName !== userName);
 					this._sendDataInFront('users', roomID, room, this.connections[roomID]);
-					console.log(this.connections[roomID].length);
 					if (this.connections[roomID].length === 0) {
-						console.log(`0 clients on ${roomID} room`);
 						delete this.connections[roomID];
+						this.redisClient.delRoom(roomID);
 					}
 				});
 			}

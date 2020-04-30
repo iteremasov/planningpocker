@@ -81,7 +81,7 @@ export default function StatisticPanel({ users, showVotes }) {
               </ListItem>
               {statistic.map((item, index) => {
                 return (
-                  <ListItem>
+                  <ListItem key={index}>
                     <ListItemText>
                       users- {item.counter}
                     </ListItemText>

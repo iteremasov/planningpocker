@@ -10,7 +10,6 @@ class RedisClient {
 
 	setRoom(key, room) {
 		try {
-			// const room = { users: [] };
 			this.client.set(key, JSON.stringify(room));
 			return { id: key };
 		} catch {
@@ -22,6 +21,14 @@ class RedisClient {
 	getRoom(key) {
 		return new Promise((resolve, reject) => {
 			this.client.get(key, function(err, res) {
+				resolve(res);
+				reject(err);
+			});
+		});
+	}
+	delRoom(key) {
+		return new Promise((resolve, reject) => {
+			this.client.del(key, function(err, res) {
 				resolve(res);
 				reject(err);
 			});

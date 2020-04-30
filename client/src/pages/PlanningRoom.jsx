@@ -4,6 +4,9 @@ import UsersPanel from '../components/UsersPanel';
 import IssueDescription from '../components/IssueDescription';
 import StatisticPanel from '../components/StatisticPanel';
 import { Grid } from '@material-ui/core';
+import ReconnectingWebSocket from 'reconnecting-websocket';
+import Button from '@material-ui/core/Button'
+
 
 import './planning-room.css';
 
@@ -35,9 +38,14 @@ export default class PlaningRoom extends Component {
     this.state.socket.send(data);
   };
 
+  refresh = () => {
+    this.state.socket.reconnect();
+  }
+
   componentDidMount = () => {
     const { roomkey, userName } = this.props;
-    const socket = new WebSocket(process.env.REACT_APP_URI_WS + roomkey + '/' + userName);
+    const  url = process.env.REACT_APP_URI_WS + roomkey + '/' + userName;
+    const socket = new ReconnectingWebSocket(url, null, {debug: true, reconnectInterval: 3000});
     socket.onopen = function () {
       console.log('Socket is open');
     };
@@ -84,6 +92,9 @@ export default class PlaningRoom extends Component {
     const description = this.state.description;
     return (
       <>
+      <Button onClick={this.refresh}>
+        refresh connect
+      </Button>
         <Grid container direction="row" alignItems="flex-start" spacing={3}>
           <Grid xs item>
             <VotingPanel onClick={this.setVote} showVotes={this.showVotes} cleanVotes={this.cleanVotes} />
@@ -107,8 +118,3 @@ export default class PlaningRoom extends Component {
     );
   }
 }
-
-
-
-
-// <VotingPanel onClick={this.setVote} showVotes={this.showVotes} cleanVotes={this.cleanVotes} />
