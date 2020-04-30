@@ -12,15 +12,11 @@ export default class PlaningRoom extends Component {
     users: [],
     socket: null,
     description: '',
+    showVotes: null
   };
 
   cleanVotes = () => {
     const data = JSON.stringify({ key: 'cleanVotes' });
-    this.state.socket.send(data);
-  };
-
-  setPost = post => {
-    const data = JSON.stringify({ key: 'posts', data: post });
     this.state.socket.send(data);
   };
 
@@ -58,16 +54,13 @@ export default class PlaningRoom extends Component {
       const data = JSON.parse(event.data);
       switch (data.key) {
         case 'firstConnect':
-          this.setState({ users: data.users, description: data.description, posts: data.posts });
+          this.setState({ users: data.users, description: data.description, showVotes: data.showVotes });
           break;
         case 'users':
-          this.setState({ users: data.data });
+          this.setState({ users: data.data, showVotes: data.showVotes });
           break;
         case 'description':
           this.setState({ description: data.data });
-          break;
-        case 'posts':
-          this.setState({ posts: data.posts });
           break;
         default:
       }
@@ -107,7 +100,7 @@ export default class PlaningRoom extends Component {
             <UsersPanel users={this.state.users} />
           </Grid>
           <Grid xs item>
-            <StatisticPanel users={this.state.users} />
+            <StatisticPanel users={this.state.users} showVotes={this.state.showVotes} />
           </Grid>
         </Grid>
       </>

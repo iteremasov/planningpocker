@@ -51,7 +51,7 @@ const getVoteMerger = users => {
   return result;
 };
 
-export default function StatisticPanel({ users }) {
+export default function StatisticPanel({ users, showVotes }) {
   const statistic = getVoteMerger(users);
   return (
     <Card>
@@ -68,26 +68,31 @@ export default function StatisticPanel({ users }) {
               {getQuantity(users)}
             </ListItemSecondaryAction>
           </ListItem>
-          <ListItem>
-            <ListItemText>
-              Average
-            </ListItemText>
-            <ListItemSecondaryAction>
-              {getAverage(users)}
-            </ListItemSecondaryAction>
-          </ListItem>
-          {statistic.map((item, index) => {
-            return (
+          {
+            showVotes &&
+            <div>
               <ListItem>
                 <ListItemText>
-                  users- {item.counter}
-                </ListItemText>
+                  Average
+            </ListItemText>
                 <ListItemSecondaryAction>
-                  vote-{conformityRevers[item.vote]}
+                  {getAverage(users)}
                 </ListItemSecondaryAction>
               </ListItem>
-            )
-          })}
+              {statistic.map((item, index) => {
+                return (
+                  <ListItem>
+                    <ListItemText>
+                      users- {item.counter}
+                    </ListItemText>
+                    <ListItemSecondaryAction>
+                      vote-{conformityRevers[item.vote]}
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                )
+              })}
+            </div>
+          }
         </List>
       </CardContent>
     </Card>

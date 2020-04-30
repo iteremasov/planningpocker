@@ -48,11 +48,6 @@ class Main {
 
 	_sendDataInFront(metod, roomID, room, roomConnections) {
 		switch (metod) {
-			case 'posts':
-				roomConnections.map(connection =>
-					connection.ws.send(JSON.stringify({ key: 'posts', posts: room.posts }))
-				);
-				break;
 			case 'firstConnect':
 				if (room.showVotes) {
 					roomConnections.map(connection => {
@@ -61,7 +56,7 @@ class Main {
 								key: 'firstConnect',
 								users: room.users,
 								description: room.issueDescription,
-								posts: room.posts,
+								showVotes: room.showVotes
 							})
 						);
 					});
@@ -79,16 +74,16 @@ class Main {
 								key: 'firstConnect',
 								users: users,
 								description: room.issueDescription,
-								posts: room.posts,
+								showVotes: room.showVotes
 							})
 						);
 					});
 				}
 				break;
 			case 'users':
-				if (this._allVoteCheck(room.users) || room.showVotes) {
+				if (room.showVotes) {
 					roomConnections.map(connection => {
-						connection.ws.send(JSON.stringify({ key: 'users', data: room.users }));
+						connection.ws.send(JSON.stringify({ key: 'users', data: room.users, showVotes: room.showVotes }));
 					});
 				} else {
 					roomConnections.map(connection => {
@@ -99,7 +94,7 @@ class Main {
 								return { ...user };
 							}
 						});
-						connection.ws.send(JSON.stringify({ key: 'users', data: users }));
+						connection.ws.send(JSON.stringify({ key: 'users', data: users, showVotes: room.showVotes }));
 					});
 				}
 				break;
@@ -136,13 +131,9 @@ class Main {
 								user.vote = null;
 								return user;
 							});
+							room.showVotes = false;
 							this.redisClient.setRoom(roomID, room);
 							this._sendDataInFront('users', roomID, room, roomConnections);
-							break;
-						case 'posts':
-							room.posts.push(msg.data);
-							this.redisClient.setRoom(roomID, room);
-							this._sendDataInFront('posts', roomID, room, roomConnections);
 							break;
 						case 'vote':
 							room.users = room.users.map(user => {
@@ -151,6 +142,9 @@ class Main {
 								}
 								return user;
 							});
+							if (this._allVoteCheck(room.users)) {
+								room.showVotes = true;
+							}
 							this.redisClient.setRoom(roomID, room);
 							this._sendDataInFront('users', roomID, room, roomConnections);
 							break;
@@ -174,7 +168,7 @@ class Main {
 					this.connections[roomID] = this.connections[roomID].filter(user => user.userName !== userName);
 					this._sendDataInFront('users', roomID, room, this.connections[roomID]);
 					console.log(this.connections[roomID].length);
-					if (this.connections[roomID].length === 0){
+					if (this.connections[roomID].length === 0) {
 						console.log(`0 clients on ${roomID} room`);
 						delete this.connections[roomID];
 					}
