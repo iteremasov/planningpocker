@@ -97,7 +97,7 @@ export default class PlaningRoom extends Component {
       </Button>
         <Grid container direction="row" alignItems="flex-start" spacing={3}>
           <Grid xs item>
-            <VotingPanel onClick={this.setVote} showVotes={this.showVotes} cleanVotes={this.cleanVotes} />
+            <VotingPanel disableButton = {this.state.showVotes} onClick={this.setVote} showVotes={this.showVotes} cleanVotes={this.cleanVotes} />
           </Grid>
           <Grid xs item>
             <IssueDescription

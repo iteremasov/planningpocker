@@ -18,7 +18,7 @@ const getRandom = (max) => {
   return Math.floor(Math.random() * max);
 }
 
-export default function VotingPanel({ showVotes, cleanVotes, onClick }) {
+export default function VotingPanel({ disableButton, showVotes, cleanVotes, onClick }) {
 
   const click = item => {
     onClick(conformity[item]);
@@ -35,14 +35,14 @@ export default function VotingPanel({ showVotes, cleanVotes, onClick }) {
         <CardActions>
           <Button color="primary" variant="contained" onClick={showVotes}>Show Results</Button>
           <Button color="primary" variant="contained" onClick={cleanVotes}>Clean</Button>
-          <Button color="primary" variant="contained" onClick={() => { click(values[getRandom(values.length)]) }}>Random</Button>
+          <Button disabled={disableButton} color="primary" variant="contained" onClick={() => { click(values[getRandom(values.length)]) }}>Random</Button>
         </CardActions>
         <CardActions>
           <div>
             {
               values.map(value => {
                 return (
-                  <Button key={value} className={classes.voteButton} color="secondary" variant="contained" onClick={() => click(value)}>{value}</Button>
+                  <Button disabled={disableButton} key={value} className={classes.voteButton} color="secondary" variant="contained" onClick={() => click(value)}>{value}</Button>
                 )
               })
             }
