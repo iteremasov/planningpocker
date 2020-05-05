@@ -4,8 +4,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 const getPercent = (users) => {
   const numberOfUsers = users.length;
-  const votedUsers = users.filter(user => user.vote != null).length
-  console.log(votedUsers / numberOfUsers * 100)
+  const votedUsers = users.filter(user => user.vote != null).length;
   return votedUsers / numberOfUsers * 100;
 }
 const BorderLinearProgress = withStyles({

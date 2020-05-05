@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const getRandom = (max) => {
+  return Math.floor(Math.random() * max);
+}
+
 export default function VotingPanel({ showVotes, cleanVotes, onClick }) {
 
   const click = item => {
@@ -31,6 +35,7 @@ export default function VotingPanel({ showVotes, cleanVotes, onClick }) {
         <CardActions>
           <Button color="primary" variant="contained" onClick={showVotes}>Show Results</Button>
           <Button color="primary" variant="contained" onClick={cleanVotes}>Clean</Button>
+          <Button color="primary" variant="contained" onClick={() => { click(values[getRandom(values.length)]) }}>Random</Button>
         </CardActions>
         <CardActions>
           <div>
