@@ -79,14 +79,23 @@ export default function StatisticPanel({ users, showVotes }) {
                   {getAverage(users)}
                 </ListItemSecondaryAction>
               </ListItem>
+              {/* //TODo */}
+              <ListItem >
+                <ListItemText>
+                  Users
+                </ListItemText>
+                <ListItemSecondaryAction>
+                  Vote
+                </ListItemSecondaryAction>
+              </ListItem>
               {statistic.map((item, index) => {
                 return (
                   <ListItem key={index}>
                     <ListItemText>
-                      users- {item.counter}
+                      {item.counter}
                     </ListItemText>
                     <ListItemSecondaryAction>
-                      vote-{conformityRevers[item.vote]}
+                      {conformityRevers[item.vote]}
                     </ListItemSecondaryAction>
                   </ListItem>
                 )
@@ -98,4 +107,3 @@ export default function StatisticPanel({ users, showVotes }) {
     </Card>
   )
 }
-
