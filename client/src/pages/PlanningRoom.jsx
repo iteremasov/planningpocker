@@ -6,6 +6,7 @@ import StatisticPanel from '../components/StatisticPanel';
 import { Grid } from '@material-ui/core';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import Button from '@material-ui/core/Button'
+import DisconnectModal from '../components/DisconnectModal';
 
 
 import './planning-room.css';
@@ -15,7 +16,8 @@ export default class PlaningRoom extends Component {
     users: [],
     socket: null,
     description: '',
-    showVotes: null
+    showVotes: null,
+    disconnectSocket: false
   };
 
   cleanVotes = () => {
@@ -44,18 +46,23 @@ export default class PlaningRoom extends Component {
 
   componentDidMount = () => {
     const { roomkey, userName } = this.props;
-    const  url = process.env.REACT_APP_URI_WS + roomkey + '/' + userName;
-    const socket = new ReconnectingWebSocket(url, null, {debug: true, reconnectInterval: 3000});
-    socket.onopen = function () {
-      console.log('Socket is open');
+    const url = process.env.REACT_APP_URI_WS + roomkey + '/' + userName;
+    const socket = new ReconnectingWebSocket(url, null, { debug: false, reconnectInterval: 3000 });
+    socket.onopen = () => {
+      console.log('onopen')
+      this.setState({ disconnectSocket: false });
     };
 
-    socket.onclose = function (event) {
-      console.warn('Socket closed. Code:', event.code, 'Reason:', event.reason);
+    socket.onclose = (event) => {
+      console.log('onclose')
+      this.setState({disconnectSocket: true});
+      // console.warn('Socket closed. Code:', event.code, 'Reason:', event.reason);
     };
 
-    socket.onerror = function (error) {
-      console.error('Error connect ws:', error);
+    socket.onerror = (error) => {
+      console.log('onerror')
+      this.setState({disconnectSocket: true});
+      // console.error('Error connect ws:', error);
     };
 
     socket.onmessage = event => {
@@ -92,12 +99,13 @@ export default class PlaningRoom extends Component {
     const description = this.state.description;
     return (
       <>
-      <Button onClick={this.refresh}>
-        refresh connect
+        <DisconnectModal showModal={this.state.disconnectSocket} />
+        <Button onClick={this.refresh}>
+          refresh connect
       </Button>
         <Grid container direction="row" alignItems="flex-start" spacing={3}>
           <Grid xs item>
-            <VotingPanel disableButton = {this.state.showVotes} onClick={this.setVote} showVotes={this.showVotes} cleanVotes={this.cleanVotes} />
+            <VotingPanel disableButton={this.state.showVotes} onClick={this.setVote} showVotes={this.showVotes} cleanVotes={this.cleanVotes} />
           </Grid>
           <Grid xs item>
             <IssueDescription
@@ -108,7 +116,7 @@ export default class PlaningRoom extends Component {
 
         <Grid container direction="row" alignItems="flex-start" spacing={3}>
           <Grid xs item>
-            <UsersPanel users={this.state.users} />
+            <UsersPanel users={this.state.users} selfName={this.props.userName} />
           </Grid>
           <Grid xs item>
             <StatisticPanel users={this.state.users} showVotes={this.state.showVotes} />

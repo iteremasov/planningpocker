@@ -169,7 +169,7 @@ class Main {
 					this._sendDataInFront('users', roomID, room, this.connections[roomID]);
 					if (this.connections[roomID].length === 0) {
 						delete this.connections[roomID];
-						this.redisClient.delRoom(roomID);
+						// this.redisClient.delRoom(roomID);
 					}
 				});
 			}

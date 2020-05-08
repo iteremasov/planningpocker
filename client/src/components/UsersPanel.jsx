@@ -5,7 +5,6 @@ import jdenticon from 'jdenticon';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-// import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -16,8 +15,18 @@ import IconButton from '@material-ui/core/IconButton'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import ProgressBar from './ProgressBar';
 
+const findUser = (users, name) => {
+  const userObj = users.find(user => user.userName === name);
+  return userObj;
+}
 
-export default function UsersPanel({ users }) {
+const getAnotherUserArr = (users, selfName) => {
+  return users.filter(user => user.userName !== selfName)
+}
+
+export default function UsersPanel({ users, selfName }) {
+  const currentUser = findUser(users, selfName);
+  const anotherUsersArray = getAnotherUserArr(users, selfName);
 
   return (
     <Card>
@@ -27,8 +36,29 @@ export default function UsersPanel({ users }) {
         </Typography>
         <ProgressBar users={users} />
         <List dense>
+          <ListItem >
+            <ListItemAvatar>
+              <Avatar alt="image">
+                <i dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(currentUser?.userName, 105) }} />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primaryTypographyProps={{ variant: 'subtitle2'}}	 primary={currentUser?.userName + ' (you)'} />
+            <ListItemSecondaryAction>
+              <IconButton>
+                {
+                  currentUser?.vote != null ? (
+                    currentUser?.vote === true ?
+                      <CheckIcon /> :
+                      conformityRevers[currentUser?.vote]
+                  ) : (
+                      <HelpOutlineOutlinedIcon />
+                    )
+                }
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
           {
-            users.map((user, index) => {
+            anotherUsersArray.map((user, index) => {
               return (
                 <ListItem key={user.userName}>
                   <ListItemAvatar>
