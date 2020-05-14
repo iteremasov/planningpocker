@@ -15,7 +15,7 @@ class CustomerController {
     @CrossOrigin("*")
     fun hello(): String {
         var randomString = java.util.UUID.randomUUID().toString().substring(0, 7)
-        var roomForRedis = RoomForRedis(issueDescription = "", showVotes = false, users = emptyArray(), posts = emptyArray())
+        var roomForRedis = RoomForRedis(issueDescription = "", showVotes = false, users = emptyArray())
         jedis.set(randomString, Gson().toJson(roomForRedis))
         return Gson().toJson(RoomId(id = randomString))
     }

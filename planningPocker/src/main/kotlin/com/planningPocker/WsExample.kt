@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong
 import redis.clients.jedis.Jedis
 
 
-class ChatHandler : TextWebSocketHandler() {
+class WS : TextWebSocketHandler() {
     val jedis = Jedis()
     val connect = jedis.connect()
 
@@ -67,8 +67,8 @@ class ChatHandler : TextWebSocketHandler() {
 
             when (method) {
                 "firstConnect" -> {
-                    if (allVoteCheck(room) || room.showVotes) {
-                        val message = Message(key = "firstConnect", posts = room.posts, users = room.users, description = room.issueDescription)
+                    if (room.showVotes) {
+                        val message = Message(key = "firstConnect", users = room.users, description = room.issueDescription)
                         appRoom.connections.forEach { emit(it.key, message) }
                     } else {
                         appRoom.connections.forEach {
@@ -78,14 +78,14 @@ class ChatHandler : TextWebSocketHandler() {
                                     user.vote = null
                                 }
                             }
-                            val message = Message(key = "firstConnect", posts = room.posts, users = users, description = room.issueDescription)
+                            val message = Message(key = "firstConnect", users = users, description = room.issueDescription)
                             emit(it.key, message)
                         }
                     }
 
                 }
                 "users" -> {
-                    if (allVoteCheck(room) || room.showVotes) {
+                    if (room.showVotes) {
                         var users = room.users.map { it.copy() }
                         val message = UsersMessage(data = users)
                         appRoom.connections.forEach { emit(it.key, message) }
@@ -106,10 +106,6 @@ class ChatHandler : TextWebSocketHandler() {
                 }
                 "description" -> {
                     val message = DescriptionMessage(data = room.issueDescription)
-                    appRoom.connections.forEach { emit(it.key, message) }
-                }
-                "posts" -> {
-                    val message = PostsMessage(posts = room.posts)
                     appRoom.connections.forEach { emit(it.key, message) }
                 }
             }
@@ -193,17 +189,15 @@ class ChatHandler : TextWebSocketHandler() {
                             user.vote = vote
                         }
                     }
+//                    TODO
+                    if (allVoteCheck(room = dataBaseRoom)) {
+                        dataBaseRoom.showVotes = true
+                    }
                     jedis.set(roomID, Gson().toJson(dataBaseRoom))
                     sendDataInFront(method = "users", room = dataBaseRoom, roomID = roomID)
                 }
-                "posts" -> {
-                    var JSONpost = json.get("data")
-                    var post = Post(user = JSONpost.get("user").asText(), post = JSONpost.get("post").asText())
-                    dataBaseRoom.posts += post
-                    jedis.set(roomID, Gson().toJson(dataBaseRoom))
-                    sendDataInFront(method = "posts", room = dataBaseRoom, roomID = roomID)
-                }
                 "cleanVotes" -> {
+                    dataBaseRoom.showVotes = false
                     dataBaseRoom.users.map { user -> user.vote = null }
                     jedis.set(roomID, Gson().toJson(dataBaseRoom))
                     sendDataInFront(method = "users", room = dataBaseRoom, roomID = roomID)
@@ -222,7 +216,7 @@ class ChatHandler : TextWebSocketHandler() {
 @EnableWebSocket
 class WSConfig : WebSocketConfigurer {
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(ChatHandler(), "/planning/room/{roomKey}/{userName}").setAllowedOrigins("*")
+        registry.addHandler(WS(), "/planning/room/{roomKey}/{userName}").setAllowedOrigins("*")
     }
 }
 
