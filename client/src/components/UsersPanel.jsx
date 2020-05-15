@@ -1,6 +1,5 @@
 import React from 'react';
 import { conformityRevers } from '../static/Static';
-// import CheckIcon from '@material-ui/icons/Check';
 import jdenticon from 'jdenticon';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
