@@ -5,7 +5,6 @@ import IssueDescription from '../components/IssueDescription';
 import StatisticPanel from '../components/StatisticPanel';
 import { Grid } from '@material-ui/core';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import Button from '@material-ui/core/Button'
 import DisconnectModal from '../components/DisconnectModal';
 
 
@@ -40,10 +39,6 @@ export default class PlaningRoom extends Component {
     this.state.socket.send(data);
   };
 
-  refresh = () => {
-    this.state.socket.reconnect();
-  }
-
   componentDidMount = () => {
     const { roomkey, userName } = this.props;
     const url = process.env.REACT_APP_URI_WS + roomkey + '/' + userName;
@@ -55,13 +50,13 @@ export default class PlaningRoom extends Component {
 
     socket.onclose = (event) => {
       console.log('onclose')
-      this.setState({disconnectSocket: true});
+      this.setState({ disconnectSocket: true });
       // console.warn('Socket closed. Code:', event.code, 'Reason:', event.reason);
     };
 
     socket.onerror = (error) => {
       console.log('onerror')
-      this.setState({disconnectSocket: true});
+      this.setState({ disconnectSocket: true });
       // console.error('Error connect ws:', error);
     };
 
@@ -100,9 +95,6 @@ export default class PlaningRoom extends Component {
     return (
       <>
         <DisconnectModal showModal={this.state.disconnectSocket} />
-        <Button onClick={this.refresh}>
-          refresh connect
-      </Button>
         <Grid container direction="row" alignItems="flex-start" spacing={3}>
           <Grid xs item>
             <VotingPanel disableButton={this.state.showVotes} onClick={this.setVote} showVotes={this.showVotes} cleanVotes={this.cleanVotes} />
