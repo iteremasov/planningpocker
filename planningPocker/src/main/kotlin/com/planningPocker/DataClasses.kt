@@ -2,7 +2,7 @@ package com.planningPocker
 
 import org.springframework.web.socket.WebSocketSession
 
-data class User(val userName: String, var vote: Float?)
+data class User(val userName: String, var vote: Float?, var voteCounter: Int)
 
 data class Message(val key: String, var users: Any, var description: String)
 

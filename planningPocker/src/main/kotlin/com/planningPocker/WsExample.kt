@@ -149,7 +149,7 @@ class WS : TextWebSocketHandler() {
             }
 
             var roomRedis = Gson().fromJson(roomOFredis, RoomForRedis::class.java)
-            var user = User(userName = userName, vote = null)
+            var user = User(userName = userName, vote = null, voteCounter = 0)
             if (roomRedis.users.contains(user)) {
                 session.close(); return
             }
@@ -187,6 +187,7 @@ class WS : TextWebSocketHandler() {
                     dataBaseRoom.users.map { user ->
                         if (user.userName == userName) {
                             user.vote = vote
+                            user.voteCounter ++
                         }
                     }
 //                    TODO
@@ -199,6 +200,7 @@ class WS : TextWebSocketHandler() {
                 "cleanVotes" -> {
                     dataBaseRoom.showVotes = false
                     dataBaseRoom.users.map { user -> user.vote = null }
+                    dataBaseRoom.users.map { user -> user.voteCounter = 0 }
                     jedis.set(roomID, Gson().toJson(dataBaseRoom))
                     sendDataInFront(method = "users", room = dataBaseRoom, roomID = roomID)
 

@@ -68,7 +68,7 @@ export default function UsersPanel({ users, selfName }) {
                     <IconButton>
                       {
                         user.voteCounter > 0 ? (
-                          user.vote === null ? (
+                          user.vote == null ? (
                             <i dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(user.voteCounter, 30) }} />
                           ) : (
                               conformityRevers[user.vote]
