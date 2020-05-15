@@ -1,6 +1,6 @@
 import React from 'react';
 import { conformityRevers } from '../static/Static';
-import CheckIcon from '@material-ui/icons/Check';
+// import CheckIcon from '@material-ui/icons/Check';
 import jdenticon from 'jdenticon';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -42,14 +42,12 @@ export default function UsersPanel({ users, selfName }) {
                 <i dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(currentUser?.userName, 105) }} />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primaryTypographyProps={{ variant: 'subtitle2'}}	 primary={currentUser?.userName + ' (you)'} />
+            <ListItemText primaryTypographyProps={{ variant: 'subtitle2' }} primary={currentUser?.userName + ' (you)'} />
             <ListItemSecondaryAction>
               <IconButton>
                 {
-                  currentUser?.vote != null ? (
-                    currentUser?.vote === true ?
-                      <CheckIcon /> :
-                      conformityRevers[currentUser?.vote]
+                  currentUser?.voteCounter > 0 ? (
+                    conformityRevers[currentUser?.vote]
                   ) : (
                       <HelpOutlineOutlinedIcon />
                     )
@@ -70,10 +68,12 @@ export default function UsersPanel({ users, selfName }) {
                   <ListItemSecondaryAction>
                     <IconButton>
                       {
-                        user.vote != null ? (
-                          user.vote === true ?
-                            <CheckIcon /> :
-                            conformityRevers[user.vote]
+                        user.voteCounter > 0 ? (
+                          user.vote === null ? (
+                            <i dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(user.voteCounter, 30) }} />
+                          ) : (
+                              conformityRevers[user.vote]
+                            )
                         ) : (
                             <HelpOutlineOutlinedIcon />
                           )

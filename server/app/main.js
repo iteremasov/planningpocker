@@ -63,8 +63,8 @@ class Main {
 				} else {
 					roomConnections.map(connection => {
 						const users = room.users.map(user => {
-							if (user.userName !== connection.userName && user.vote !== null) {
-								return { ...user, vote: true };
+							if (user.userName !== connection.userName) {
+								return { ...user, vote: null };
 							} else {
 								return { ...user };
 							}
@@ -88,8 +88,8 @@ class Main {
 				} else {
 					roomConnections.map(connection => {
 						const users = room.users.map(user => {
-							if (user.userName !== connection.userName && user.vote !== null) {
-								return { ...user, vote: true };
+							if (user.userName !== connection.userName) {
+								return { ...user, vote: null };
 							} else {
 								return { ...user };
 							}
@@ -116,7 +116,7 @@ class Main {
 				ws.close();
 			} else {
 				this._setWS(roomID, ws, userName);
-				room.users = [...room.users, { userName: userName, vote: null }];
+				room.users = [...room.users, { userName: userName, vote: null, voteCounter: 0 }];
 				this.redisClient.setRoom(roomID, room);
 				this._sendDataInFront('firstConnect', roomID, room, this.connections[roomID]);
 
@@ -129,6 +129,7 @@ class Main {
 						case 'cleanVotes':
 							room.users = room.users.map(user => {
 								user.vote = null;
+								user.voteCounter = 0;
 								return user;
 							});
 							room.showVotes = false;
@@ -139,6 +140,7 @@ class Main {
 							room.users = room.users.map(user => {
 								if (user.userName === userName) {
 									user.vote = msg.data;
+									user.voteCounter++;
 								}
 								return user;
 							});
