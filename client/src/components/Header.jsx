@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container'
 import { withRouter } from "react-router";
-import AddUsers from './AddUsers'
+import AddUsers from './addUserModal'
 import { ReactComponent as MainIcon } from '../images/mainIcon.svg';
 import Button from '@material-ui/core/Button'
 
