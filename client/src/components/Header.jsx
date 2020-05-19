@@ -4,10 +4,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container'
-import { withRouter } from "react-router";
-import AddUsers from './addUserModal'
-import { ReactComponent as MainIcon } from '../images/mainIcon.svg';
 import Button from '@material-ui/core/Button'
+import { withRouter } from "react-router-dom";
+
+import { InviteUsers } from './InviteUsers'
+import { ReactComponent as MainIcon } from '../images/mainIcon.svg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,25 +27,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Header() {
+function HeaderComponent({ location }) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={ classes.root }>
       <AppBar position="static">
         <Container maxWidth="md">
           <Toolbar>
-              <Button href="/">
-                <MainIcon />
-              </Button>
-            <Typography className={classes.title} variant="h6" noWrap>
+            <Button href="/">
+              <MainIcon/>
+            </Button>
+            <Typography className={ classes.title } variant="h6" noWrap>
               Pplanning
-          </Typography>
+            </Typography>
             {
-              window.location.pathname.length > 1 &&
-              <AddUsers url={window.location.href} />
+              location.pathname.length > 1 &&
+              <InviteUsers url={ window.location.href }/>
             }
-
           </Toolbar>
         </Container>
       </AppBar>
@@ -52,4 +52,4 @@ function Header() {
   );
 }
 
-export default withRouter(Header)
+export const Header = withRouter(HeaderComponent);

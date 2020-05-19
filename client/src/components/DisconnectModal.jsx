@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DisconnectModal({showModal}) {
+export function DisconnectModal({showModal}) {
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
 

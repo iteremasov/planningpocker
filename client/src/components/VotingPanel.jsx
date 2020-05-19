@@ -1,11 +1,12 @@
 import React from 'react';
-import { conformity } from '../static/Static';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+
+import { conformity } from '../constants/estimates';
 
 const useStyles = makeStyles((theme) => ({
   voteButton: {
@@ -16,10 +17,9 @@ const useStyles = makeStyles((theme) => ({
 
 const getRandom = (max) => {
   return Math.floor(Math.random() * max);
-}
+};
 
-export default function VotingPanel({ disableButton, showVotes, cleanVotes, onClick }) {
-
+export function VotingPanel({ disableButton, showVotes, cleanVotes, onClick }) {
   const click = item => {
     onClick(conformity[item]);
   };
@@ -42,7 +42,16 @@ export default function VotingPanel({ disableButton, showVotes, cleanVotes, onCl
             {
               values.map(value => {
                 return (
-                  <Button disabled={disableButton} key={value} className={classes.voteButton} color="secondary" variant="contained" onClick={() => click(value)}>{value}</Button>
+                  <Button
+                    disabled={disableButton}
+                    key={value}
+                    className={classes.voteButton}
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => click(value)}
+                  >
+                    {value}
+                  </Button>
                 )
               })
             }

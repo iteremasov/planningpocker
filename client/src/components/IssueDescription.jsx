@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import Card from '@material-ui/core/Card';
-// import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextareaAutosize } from '@material-ui/core';
 
-import './issueDescription.css';
+import './IssueDescription.css';
 
 const useStyles = makeStyles((theme) => ({
   typography: {
@@ -17,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const IssueDescription = ({ saveDescription, description }) => {
+export const IssueDescription = ({ saveDescription, description }) => {
   const [value, setValue] = useState('');
   const [editing, setEditing] = useState(false);
 
@@ -40,24 +39,28 @@ const IssueDescription = ({ saveDescription, description }) => {
       <CardContent>
         <Typography variant="h5" component="h2">
           Issue Description
-      </Typography>
+        </Typography>
         <div>
-          {editing ? <TextareaAutosize autoFocus
-            className="issue-description__textarea"
-            onChange={changeDescription}
-            defaultValue={description}
-            aria-label="maximum height"
-            rows={5}
-          /> : <Typography className={classes.typography} onClick={clickButton} component="p">
-              {description}
-            </Typography>}
-          <Button onClick={clickButton}>
-            {editing ? 'SAVE' : 'EDIT'}
+          {
+            editing ?
+              <TextareaAutosize
+                autoFocus
+                className="issue-description__textarea"
+                onChange={ changeDescription }
+                defaultValue={ description }
+                aria-label="maximum height"
+                rows={ 5 }
+              />
+              :
+              <Typography className={ classes.typography } onClick={ clickButton } component="p">
+                { description }
+              </Typography>
+          }
+          <Button onClick={ clickButton }>
+            { editing ? 'SAVE' : 'EDIT' }
           </Button>
         </div>
       </CardContent>
     </Card>
   )
 };
-
-export default IssueDescription;

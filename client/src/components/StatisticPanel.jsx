@@ -1,10 +1,17 @@
 import React from 'react';
-import { CardContent, Typography, List, ListItemSecondaryAction, Card, ListItem, ListItemText } from '@material-ui/core';
-import { conformityRevers } from '../static/Static';
+import {
+  Card,
+  CardContent,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  Typography,
+} from '@material-ui/core';
+import { conformityRevers } from '../constants/estimates';
 
 const getAllVote = users => {
-  const arrayVotes = users.map(user => user.vote);
-  return arrayVotes;
+  return users.map(user => user.vote);
 };
 
 const getQuantity = users => {
@@ -51,7 +58,7 @@ const getVoteMerger = users => {
   return result;
 };
 
-export default function StatisticPanel({ users, showVotes }) {
+export function StatisticPanel({ users, showVotes }) {
   const statistic = getVoteMerger(users);
   return (
     <Card>
@@ -79,13 +86,12 @@ export default function StatisticPanel({ users, showVotes }) {
                   {getAverage(users)}
                 </ListItemSecondaryAction>
               </ListItem>
-              {/* //TODo */}
               <ListItem >
                 <ListItemText>
-                  Users
+                  Votes
                 </ListItemText>
                 <ListItemSecondaryAction>
-                  Vote
+                  Points
                 </ListItemSecondaryAction>
               </ListItem>
               {statistic.map((item, index) => {

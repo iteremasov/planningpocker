@@ -6,7 +6,7 @@ const getPercent = (users) => {
   const numberOfUsers = users.length;
   const votedUsers = users.filter(user => user.voteCounter > 0).length;
   return votedUsers / numberOfUsers * 100;
-}
+};
 const BorderLinearProgress = withStyles({
   root: {
     height: 10,

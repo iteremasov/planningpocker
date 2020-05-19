@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-
-import Header from '../components/Header';
-import Router from '../components/Router';
 import Container from '@material-ui/core/Container'
+
+import { Header } from '../components/Header';
+import { Router } from '../boot/Router';
 
 export default class Home extends Component {
 	render() {
